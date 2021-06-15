@@ -5,7 +5,7 @@ from PIL import Image, ImageTk
 from tkinter import messagebox
 from datetime import datetime, timedelta
 import rsaidnumber
-from validate_email import validate_email
+from email_validator import validate_email, EmailNotValidError
 
 login_screen = Tk()
 login_screen.geometry("800x800")
@@ -16,6 +16,7 @@ canvas = Canvas(login_screen, width=300, height=100, bg="#fcf00d", borderwidth=0
 canvas.place(relx=0.3, rely=0.1)
 img_logo = ImageTk.PhotoImage(Image.open("lotto_name.png"))
 canvas.create_image(150, 5, anchor=N, image=img_logo)
+
 
 # function to calculate age
 
@@ -55,13 +56,54 @@ class User:
         self.residential_address_entry = Entry(master, width=20, font=("Arial", 15))
         self.residential_address_entry.place(relx=0.5, rely=0.69)
         # login button
-        login_btn = Button(login_screen, borderwidth=5, padx=15, pady=10, fg="black", bg="#adacac", text="Login",
+        login_btn = Button(login_screen, borderwidth=5, padx=15, pady=10, fg="black", bg="#09bd27", text="Login",
                            font=("Arial", 17, "bold"), command=self.age_calc)
-        login_btn.place(relx=0.43, rely=0.82)
+        login_btn.place(relx=0.1, rely=0.86)
+        # clear button
+        clear_btn = Button(login_screen, borderwidth=5, padx=25, pady=10, fg="black", bg="#bdbdbd", text="Clear",
+                          font=("Arial", 17, "bold"), command=self.clear)
+        clear_btn.place(relx=0.43, rely=0.86)
         # exit button
-        exit_btn = Button(login_screen, borderwidth=5, padx=25, pady=10, fg="black", bg="#adacac", text="Exit",
+        exit_btn = Button(login_screen, borderwidth=5, padx=25, pady=10, fg="black", bg="red", text="Exit",
                           font=("Arial", 17, "bold"), command=self.exit)
-        exit_btn.place(relx=0.43, rely=0.9)
+        exit_btn.place(relx=0.755, rely=0.86)
+
+    def age_calc(self):
+        try:
+            fh = open("Entries.txt", "a")
+            fh.write(self.name_entry.get())
+            fh.write('\n')
+            fh.write(self.id_entry.get())
+            fh.write('\n')
+            fh.write(self.email_entry.get())
+            fh.write('\n')
+            fh.write(self.telephone_number_entry.get())
+            fh.write('\n')
+            fh.write(self.residential_address_entry.get())
+            fh.write('\n')
+            try:
+                # current date
+                date = datetime.today()
+                # validate email
+                valid = validate_email(self.email_entry.get())
+                # email = valid.email
+                id_number = rsaidnumber.parse(self.id_entry.get())
+                found = True
+                if found:
+                    dob = id_number.date_of_birth
+                    current_age = int((date - dob) // timedelta(days=365.25))
+                    if int(current_age) >= 18:
+                        messagebox.showinfo("Valid Details", "Let's Play!")
+                        login_screen.withdraw()
+                    else:
+                        messagebox.showinfo("Underage", "You are too young to play.\nPlease try again in " + str(
+                            18 - int(current_age)) + " years")
+                else:
+                    messagebox.showinfo("Invalid Details", "Invalid ID number. Try again.")
+            except EmailNotValidError:
+                messagebox.showinfo("Invalid Email Address", "\nPlease enter a valid email address.")
+        except ValueError:
+            messagebox.showinfo("Invalid ID", "\nPlease enter a valid South African ID number that consists of 13 digits.")
 
     # def age_calc(self):
     #     try:
@@ -69,53 +111,113 @@ class User:
     #         email = validate_email(self.email_entry.get())
     #         id_number = rsaidnumber.parse(self.id_entry.get())
     #         found = True
+    #         dob = id_number.date_of_birth
+    #         current_age = int((date - dob) // timedelta(days=365.25))
     #         if len(self.id_entry.get()) != 13:
-    #             # messagebox.showerror("Inv", "must be 13")
-    #             if found:
+    #             messagebox.showerror("Inv", "Please enter 13 digits")
+    #         elif self.id_entry.get() == str(self.id_entry.get()) :
+    #             messagebox.showinfo("Invalid Details", "Invalid ID number, enter digits. Try again.")
+    #         elif found == False:
+    #             messagebox.showinfo("Invalid ID", "\nPlease enter your valid South African ID number")
+    #         # elif int(current_age) >= 18:
+    #         #     messagebox.showinfo("Valid Details", "Let's Play!")
+    #         #             # import screen_2
+    #     except int(current_age) >= 18:
+    #             messagebox.showinfo("Valid Details", "Let's Play!")
+    #                     # import screen_2
+    #     else:
+    #         messagebox.showinfo("Underage", "You are too young to play.\nPlease try again in " + str(
+    #                         18 - int(current_age)) + " years")
+    #     # except ValueError:
+    #     #     messagebox.showinfo("Invalid ID", "\nPlease enter 13 digits")
+
+    # def age_calc(self):
+    #     try:
+    #         fh = open("Entries.txt", "w")
+    #         fh.write(self.name_entry.get())
+    #         fh.write('\n')
+    #         fh.write(self.id_entry.get())
+    #         fh.write('\n')
+    #         fh.write(self.email_entry.get())
+    #         fh.write('\n')
+    #         fh.write(self.telephone_number_entry.get())
+    #         fh.write('\n')
+    #         fh.write(self.residential_address_entry.get())
+    #         fh.write('\n')
+    #         # current date
+    #         date = datetime.today()
+    #         # validate email
+    #         valid = validate_email(self.email_entry.get())
+    #         # email = valid.email
+    #         id_number = rsaidnumber.parse(self.id_entry.get())
+    #         found = True
+    #     except EmailNotValidError:
+    #         messagebox.showinfo("Invalid Email Address", "\nPlease enter a valid email address.")
+    #     except ValueError:
+    #         messagebox.showinfo("Invalid ID", "\nPlease enter a valid South African ID number that consists of 13 digits.")
+    #     finally:
+    #             if found and self.id_entry.get() == 13:
     #                 dob = id_number.date_of_birth
     #                 current_age = int((date - dob) // timedelta(days=365.25))
     #                 if int(current_age) >= 18:
     #                     messagebox.showinfo("Valid Details", "Let's Play!")
-    #                 # import screen_2
+    #                     login_screen.withdraw()
+    #                     # import screen_2
     #                 else:
     #                     messagebox.showinfo("Underage", "You are too young to play.\nPlease try again in " + str(
     #                         18 - int(current_age)) + " years")
     #             else:
     #                 messagebox.showinfo("Invalid Details", "Invalid ID number. Try again.")
-    #         else:
-    #             messagebox.showinfo("Invalid ID", "\nPlease enter your valid South African ID number")
+
+    # def age_calc(self):
+    #     try:
+    #         fh = open("Entries.txt", "w")
+    #         fh.write(self.name_entry.get())
+    #         fh.write('\n')
+    #         fh.write(self.id_entry.get())
+    #         fh.write('\n')
+    #         fh.write(self.email_entry.get())
+    #         fh.write('\n')
+    #         fh.write(self.telephone_number_entry.get())
+    #         fh.write('\n')
+    #         fh.write(self.residential_address_entry.get())
+    #         fh.write('\n')
+    #         try:
+    #             # current date
+    #             date = datetime.today()
+    #             # validate email
+    #             valid = validate_email(self.email_entry.get())
+    #             # email = valid.email
+    #             id_number = rsaidnumber.parse(self.id_entry.get())
+    #             found = True
+    #             try:
+    #                  while found:
+    #                     dob = id_number.date_of_birth
+    #                     current_age = int((date - dob) // timedelta(days=365.25))
+    #                     if int(current_age) >= 18:
+    #                         messagebox.showinfo("Valid Details", "Let's Play!")
+    #                         login_screen.withdraw()
+    #                         # import screen_2
+    #                     else:
+    #                         messagebox.showinfo("Underage", "You are too young to play.\nPlease try again in " + str(
+    #                             18 - int(current_age)) + " years")
+    #             except ValueError:
+    #                 messagebox.showinfo("Invalid Details", "Invalid ID number. Try again.")
+    #         except EmailNotValidError:
+    #             messagebox.showinfo("Invalid Email Address", "\nPlease enter a valid email address.")
     #     except ValueError:
-    #         messagebox.showinfo("Invalid ID", "\nInput ID in numbers.")
-
-    def age_calc(self):
-        try:
-            date = datetime.today()
-            email = validate_email(self.email_entry.get())
-            id_number = rsaidnumber.parse(self.id_entry.get())
-            found = True
-            dob = id_number.date_of_birth
-            current_age = int((date - dob) // timedelta(days=365.25))
-            if len(self.id_entry.get()) != 13:
-                messagebox.showerror("Inv", "Please enter 13 digits")
-            elif self.id_entry.get() == str(self.id_entry.get()) :
-                messagebox.showinfo("Invalid Details", "Invalid ID number, enter digits. Try again.")
-            elif found == False:
-                messagebox.showinfo("Invalid ID", "\nPlease enter your valid South African ID number")
-            # elif int(current_age) >= 18:
-            #     messagebox.showinfo("Valid Details", "Let's Play!")
-            #             # import screen_2
-        except int(current_age) >= 18:
-                messagebox.showinfo("Valid Details", "Let's Play!")
-                        # import screen_2
-        else:
-            messagebox.showinfo("Underage", "You are too young to play.\nPlease try again in " + str(
-                            18 - int(current_age)) + " years")
-        # except ValueError:
-        #     messagebox.showinfo("Invalid ID", "\nPlease enter 13 digits")
-
+    #         messagebox.showinfo("Invalid ID", "\nPlease enter a valid South African ID number that consists of 13 digits.")
+    #
+    #
+    def clear(self):
+        self.id_entry.delete(0, END)
+        self.name_entry.delete(0, END)
+        self.email_entry.delete(0, END)
+        self.telephone_number_entry.delete(0, END)
+        self.residential_address_entry.delete(0, END)
     def exit(self):
         login_screen.destroy()
 
 
-age = User(login_screen)
+person_age = User(login_screen)
 login_screen.mainloop()
