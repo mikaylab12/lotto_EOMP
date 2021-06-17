@@ -189,14 +189,14 @@ class Selection:
 
         # play button
         play_btn = Button(numberSelection_screen, borderwidth=5, padx=23, pady=10, fg="black", bg="#09bd27", text="Play"
-                          , font=("Arial", 17, "bold"), command=self.lo)
+                          , font=("Arial", 17, "bold"), command=self.lotto_generator())
         play_btn.place(relx=0.1, rely=0.9)
         # play again button
         playAgain_btn = Button(numberSelection_screen, borderwidth=5, padx=25, pady=10, fg="black", bg="#bdbdbd",
                                text="Play Again", font=("Arial", 17, "bold"), command=self.play_again)
         playAgain_btn.place(relx=0.26, rely=0.9)
         # claim button
-        claim_btn = Button(numberSelection_screen, borderwidth=5, padx=25, pady=10, fg="black", bg="#adacac",
+        claim_btn = Button(numberSelection_screen, borderwidth=5, padx=25, pady=10, fg="white", bg="black",
                            text="Claim Prize", font=("Arial", 17, "bold"), command=self.claim_prize)
         claim_btn.place(relx=0.5, rely=0.9)
         # exit button
