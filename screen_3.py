@@ -2,13 +2,12 @@
 # currency conversion screen
 from tkinter import *
 from tkinter import messagebox
-from screen_2 import total_amount
-import random
+from screen_2 import total_prize_amount
 from PIL import Image, ImageTk
 currency_conversion_screen = Tk()
 currency_conversion_screen.geometry("800x800")
 currency_conversion_screen.title("Currency Conversion")
-currency_conversion_screen.config(bg="#fcf00d")
+currency_conversion_screen.config(bg="#ffde24")
 # adding an image
 canvas = Canvas(currency_conversion_screen, width=500, height=300, bg="#fcf00d", borderwidth=0, highlightthickness=0)
 canvas.place(relx=0.3, rely=0.02)
@@ -44,7 +43,7 @@ class Conversion:
         # convert function
     def convert(self):
         try:
-            amount = float(amount_entry.get())
+            amount = float(total_prize_amount)
             print(data['conversion_rates'][convert_list.get(ACTIVE)])
             converted_amount = amount / data['conversion_rates'][convert_list.get(ACTIVE)]
             usd_answer['text'] = round(converted_amount, 2)  # round conversion off to 2 decimal places

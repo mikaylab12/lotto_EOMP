@@ -10,9 +10,9 @@ from email_validator import validate_email, EmailNotValidError
 login_screen = Tk()
 login_screen.geometry("800x800")
 login_screen.title("User Credentials")
-login_screen.config(bg="#fcf00d")
+login_screen.config(bg="#ffde24")
 # adding image
-canvas = Canvas(login_screen, width=300, height=100, bg="#fcf00d", borderwidth=0, highlightthickness=0)
+canvas = Canvas(login_screen, width=300, height=100, bg="#ffde24", borderwidth=0, highlightthickness=0)
 canvas.place(relx=0.3, rely=0.1)
 img_logo = ImageTk.PhotoImage(Image.open("lotto_name.png"))
 canvas.create_image(150, 5, anchor=N, image=img_logo)
@@ -74,16 +74,17 @@ class User:
                 # current date
                 date = datetime.today()
                 id_number = rsaidnumber.parse(self.id_entry.get())
-                found = True
-                if found:
+                valid_id = id_number
+                while valid_id:
                     dob = id_number.date_of_birth
                     current_age = int((date - dob) // timedelta(days=365.25))
                     if int(current_age) >= 18:
-                        messagebox.showinfo("Valid Details", "Let's Play!")
-                        login_screen.destroy()
-                        import screen_2
-                    elif not found:
-                        messagebox.showinfo("Invalid Details", "Invalid ID number. Try again.")
+                        # messagebox.showinfo("Valid Details", "Let's Play!")
+                        # login_screen.destroy()
+                        return 1
+                    #     # import screen_2
+                    # elif not found:
+                    #     messagebox.showinfo("Invalid Details", "Invalid ID number. Try again.")
                     else:
                         messagebox.showinfo("Underage", "You are too young to play.\nPlease try again in " + str(
                             18 - int(current_age)) + " years")
@@ -99,7 +100,7 @@ class User:
                 valid = validate_email(self.email_entry.get())
                 # email = valid.email
                 # found = True
-                if valid is True:
+                while valid:
                     return 1
 
             except EmailNotValidError:
@@ -118,6 +119,48 @@ class User:
             fh.write("Residential Address: " + self.residential_address_entry.get() + "\n")
             fh.write('\n')
             fh.close()
+            messagebox.showinfo("Valid Details", "Let's Play!")
+            login_screen.destroy()
+            import screen_2
+
+            # def age_calc(self):
+            #     try:
+            #         fh = open("Entries.txt", "a")
+            #         fh.write(self.name_entry.get())
+            #         fh.write('\n')
+            #         fh.write(self.id_entry.get())
+            #         fh.write('\n')
+            #         fh.write(self.email_entry.get())
+            #         fh.write('\n')
+            #         fh.write(self.telephone_number_entry.get())
+            #         fh.write('\n')
+            #         fh.write(self.residential_address_entry.get())
+            #         fh.write('\n')
+            #         try:
+            #             # current date
+            #             date = datetime.today()
+            #             # validate email
+            #             valid = validate_email(self.email_entry.get())
+            #             # email = valid.email
+            #             id_number = rsaidnumber.parse(self.id_entry.get())
+            #             found = True
+            #             if found:
+            #                 dob = id_number.date_of_birth
+            #                 current_age = int((date - dob) // timedelta(days=365.25))
+            #                 if int(current_age) >= 18:
+            #                     messagebox.showinfo("Valid Details", "Let's Play!")
+            #                     login_screen.withdraw()
+            #                 else:
+            #                     messagebox.showinfo("Underage",
+            #                                         "You are too young to play.\nPlease try again in " + str(
+            #                                             18 - int(current_age)) + " years")
+            #             else:
+            #                 messagebox.showinfo("Invalid Details", "Invalid ID number. Try again.")
+            #         except EmailNotValidError:
+            #             messagebox.showinfo("Invalid Email Address", "\nPlease enter a valid email address.")
+            #     except ValueError:
+            #         messagebox.showinfo("Invalid ID",
+            #                             "\nPlease enter a valid South African ID number that consists of 13 digits.")
 
     # def age_calc(self):
     #     try:
