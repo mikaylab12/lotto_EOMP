@@ -108,14 +108,10 @@ class User:
 
         if age_calc() == 1 and email_validation() == 1:
             fh = open("Entries.txt", "a")
-            fh.write("Name and Surname: " + self.name_entry.get() + "\n")
-            fh.write('\n')
-            fh.write("ID Number: " + self.id_entry.get() + "\n")
-            fh.write('\n')
-            fh.write("Email Address: " + self.email_entry.get() + "\n")
-            fh.write('\n')
-            fh.write("Contact Number: " + self.telephone_number_entry.get() + "\n")
-            fh.write('\n')
+            fh.write("Name and Surname: " + self.name_entry.get())
+            fh.write("ID Number: " + self.id_entry.get())
+            fh.write("Email Address: " + self.email_entry.get())
+            fh.write("Contact Number: " + self.telephone_number_entry.get())
             fh.write("Residential Address: " + self.residential_address_entry.get() + "\n")
             fh.write('\n')
             fh.close()

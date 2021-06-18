@@ -5,6 +5,7 @@ from tkinter import messagebox
 import random
 from PIL import Image, ImageTk
 import requests
+from tkinter import ttk
 
 numberSelection_screen = Tk()
 numberSelection_screen.geometry("800x800")
@@ -15,20 +16,11 @@ canvas = Canvas(numberSelection_screen, width=155, height=180, bg="#ffde24", bor
 canvas.place(relx=0.4, rely=0.01)
 img_lotto_logo = ImageTk.PhotoImage(Image.open("slogan2.png"))
 canvas.create_image(80, 5, anchor=N, image=img_lotto_logo)
-# # adding a second image
-# canvas = Canvas(numberSelection_screen, width=150, height=100, bg="#ffde24", borderwidth=0, highlightthickness=0)
-# canvas.place(relx=0.13, rely=0.14)
-# img_flag = ImageTk.PhotoImage(Image.open("sa_flag.gif"))
-# canvas.create_image(70, 3, anchor=N, image=img_flag)
-# # adding a third image
-# canvas = Canvas(numberSelection_screen, width=150, height=100, bg="#ffde24", borderwidth=0, highlightthickness=0)
-# canvas.place(relx=0.67, rely=0.14)
-# img_flag2 = ImageTk.PhotoImage(Image.open("sa_flag.gif"))
-# canvas.create_image(70, 3, anchor=N, image=img_flag2)
-# lotto sets will append to these lists
+# all sets chosen by client
 first_set = []
 second_set = []
 third_set = []
+# all winnings added together
 total_prize_amount = 0
 
 # all widgets displayed on this window
@@ -272,7 +264,7 @@ class Selection:
                 if len(same_match) == 0:
                     first_winnings = float(claim_prize[0])
                     messagebox.showinfo('First Set Results', "Your correct matches are: " + "0" +
-                                         "\nYou have won: R" + str(claim_prize[0]))
+                                        "\nYou have won: R" + str(claim_prize[0]))
                     # information that will be written on a separate text file
                     text = open("Lotto.txt", "a")
                     text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
@@ -878,9 +870,7 @@ class Selection:
         response = requests.get('https://v6.exchangerate-api.com/v6/3b6104d9c62069d198e73219/latest/ZAR')
         data = response.json()
         standard_rate = data['conversion_rates']
-        for i in standard_rate.keys():
-            self.convert_list.insert(END, str(i))
-        print(data['conversion_rates'][self.convert_list.get(ACTIVE)])
+
         class Conversion:
             def __init__(self, master):
                 self.conversion_frame = Frame(currency_conversion_screen, bg="#bdbdbd", width=630, height=450)
@@ -899,8 +889,13 @@ class Selection:
                 self.total_amount.place(relx=0.5, rely=0.32)
 
                 # covert label and listbox
+                self.scrollbar = Scrollbar(self.convert_list)
+                self.scrollbar.pack(side="right", fill="y")
+                for i in standard_rate.keys():
+                    self.convert_list.insert(END, str(i))
+                self.scrollbar.config(command=self.convert_list.yview)
                 self.convert_list = Listbox(master, width=20, font=("Arial", 15), bg="#bdbdbd",
-                                            selectbackground='#ffde24')
+                                            selectbackground='#ffde24', yscrollcommand=self.scrollbar.set)
                 self.convert_list.place(relx=0.36, rely=0.4)
                 self.converted_label = Label(master, text="Converted Amount: ", font=("Arial", 15, "bold"),
                                              bg="#bdbdbd")
@@ -934,6 +929,13 @@ class Selection:
                 # for i in standard_rate.keys():
                 #     self.convert_list.insert(END, str(i))
                 # print(data['conversion_rates'][self.convert_list.get(ACTIVE)])
+                # self.scrollbar = Scrollbar(master)
+                # self.scrollbar.pack(side="right", fill="y")
+                # for i in standard_rate.keys():
+                #     self.convert_list.insert(END, str(i))
+                # self.convert_list.pack(side="left", fill="both")
+                # self.scrollbar.config(command=self.convert_list.yview)
+                print(data['conversion_rates'][self.convert_list.get(ACTIVE)])
                 self.total_amount.config(text=total_prize_amount)
 
             def converting(self):
@@ -946,6 +948,7 @@ class Selection:
 
             def proceed(self):
                 currency_conversion_screen.destroy()
+                self.screen_4()
 
             def conversion_clear(self):
                 self.converted_total.config(text="")
@@ -956,6 +959,81 @@ class Selection:
 
         converting = Conversion(currency_conversion_screen)
         currency_conversion_screen.mainloop()
+
+    def screen_4(self):
+        banking_details_screen = Tk()
+        banking_details_screen.geometry("800x800")
+        banking_details_screen.title("Banking Details")
+        banking_details_screen.config(bg="#ffde24")
+        # adding an image
+        canvas = Canvas(banking_details_screen, width=500, height=300, bg="#ffde24", borderwidth=0,
+                        highlightthickness=0)
+        canvas.place(relx=0.3, rely=0.02)
+        img_banks = ImageTk.PhotoImage(Image.open("money.jpeg"))
+        canvas.create_image(150, 5, anchor=N, image=img_banks)
+
+        class Banking_details:
+            def __init__(self, master):
+                var_material = StringVar()
+                bank_options = {'ABSA': 632005, 'CAPITEC': 470010, 'FNB': 250655, 'NEDBANK': 198765}
+                self.conversion_frame = Frame(banking_details_screen, bg="#bdbdbd", width=630, height=450)
+                self.conversion_frame.place(relx=0.1, rely=0.27)
+
+                # instruction heading
+                self.instruction_heading = Label(master, text="Please enter your valid banking details:",
+                                                 font=("Arial", 17, "bold"), bg="#bdbdbd")
+                self.instruction_heading.place(relx=0.13, rely=0.28)
+
+                # total heading and amount
+                self.total_heading = Label(master, text="Total amount in ZAR(R): ", font=("Arial", 15, "bold"),
+                                           bg="#bdbdbd")
+                self.total_heading.place(relx=0.15, rely=0.32)
+                self.total_amount = Label(master, text="", font=("Arial", 15, "bold"), bg="#bdbdbd")
+                self.total_amount.place(relx=0.5, rely=0.32)
+
+                # covert label and listbox
+                self.label_selected = Label(master, text="Not Selected")
+                self.label_selected.grid(row=1, column=1)
+                self.banking_options = ttk.Combobox(master, width=20, font=("Arial", 15), bg="#bdbdbd",
+                                                    selectbackground='#ffde24', values=list(bank_options.keys()),
+                                                    justify='center', TEXTVARIABLE=var_material)
+                self.banking_options.bind('<<ComboboxSelected>>', lambda event:
+                                          self.label_selected.config(text=bank_options[var_material.get()]))
+                self.banking_options.current(0)
+
+                # label_selected = tk.Label(root, text="Not Selected")
+                # label_selected.grid(row=1, column=1)
+                self.banking_options.place(relx=0.36, rely=0.4)
+                self.bank_options_label = Label(master, text="Please select your desired bank: ", font=("Arial", 15,
+                                                "bold"), bg="#bdbdbd")
+                self.bank_options_label.place(relx=0.15, rely=0.77)
+                self.converted_total = Label(master, text="", font=("Arial", 15, "bold"), bg="#bdbdbd")
+                self.converted_total.place(relx=0.5, rely=0.77)
+
+                # proceed button
+                self.proceed_btn = Button(master, borderwidth=5, padx=25, pady=10, fg="black", bg="#09bd27",
+                                          text="Confirm", font=("Arial", 17, "bold"), command=self.confirm)
+                self.proceed_btn.place(relx=0.1, rely=0.87)
+
+                # clear button
+                self.clear_btn = Button(master, borderwidth=5, padx=25, pady=10, fg="black",
+                                        bg="#bdbdbd", text="Clear", font=("Arial", 17, "bold"),
+                                        command=self.banking_clear)
+                self.clear_btn.place(relx=0.425, rely=0.87)
+
+                # # converting button
+                # self.convert_btn = Button(master, borderwidth=5, padx=25, pady=10, fg="white", bg="black",
+                #                           text="Convert", font=("Arial", 17, "bold"), command=self.converting)
+                # self.convert_btn.place(relx=0.3, rely=0.87)
+                # exit button
+                self.exit_btn = Button(master, borderwidth=5, padx=25, pady=10, fg="black", bg="red",
+                                       text="Exit", font=("Arial", 17, "bold"), command=self.banking_exit)
+                self.exit_btn.place(relx=0.755, rely=0.87)
+
+            def checkingDetails(self):
+                    pass
+        banking_details = Banking_details(banking_details_screen)
+        banking_details_screen.mainloop()
 
 selecting_numbers = Selection(numberSelection_screen)
 numberSelection_screen.mainloop()
