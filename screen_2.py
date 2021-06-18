@@ -17,6 +17,8 @@ canvas.create_image(150, 5, anchor=N, image=img_numBalls)
 first_set = []
 second_set = []
 third_set = []
+
+
 # all widgets displayed on this window
 class Selection:
     def __init__(self, master):
@@ -176,10 +178,16 @@ class Selection:
         self.btn_49.place(relx=0.5945, rely=0.6)
 
         # labels for all 3 sets to be displayed.
+        self.first_set_label = Label(master, text="Set 1: ", bg="#bdbdbd", width=10, font=('Arial', 13))
+        self.first_set_label.place(relx=0.2, rely=0.67)
         self.first_set = Label(master, text="", bg="#bdbdbd", width=15, font=('Arial', 13))
         self.first_set.place(relx=0.15, rely=0.72)
+        self.second_set_label = Label(master, text="Set 2: ", bg="#bdbdbd", width=10, font=('Arial', 13))
+        self.second_set_label.place(relx=0.45, rely=0.67)
         self.second_set = Label(master, text="", bg="#bdbdbd", width=15, font=('Arial', 13))
         self.second_set.place(relx=0.4, rely=0.72)
+        self.third_set_label = Label(master, text="Set 3: ", bg="#bdbdbd", width=10, font=('Arial', 13))
+        self.third_set_label.place(relx=0.7, rely=0.67)
         self.third_set = Label(master, text="", bg="#bdbdbd", width=15, font=('Arial', 13))
         self.third_set.place(relx=0.65, rely=0.72)
 
@@ -187,9 +195,14 @@ class Selection:
         self.winningNums = Label(master, text="", bg="#bdbdbd", width=20, font=('Arial', 18, 'bold'))
         self.winningNums.place(relx=0.35, rely=0.8)
 
+        # label for total earnings
+        self.total_heading = Label(master, text="Total Amount Won:  R ", font=('Arial', , 'bold'))
+        self.total_heading.place(relx=0.3, rely=0.82)
+        self.total_label = Label(master, text="", bg="#bdbdbd", width=10, font=('Arial', 18, 'bold'))
+        self.total_label.place(relx=0.55, rely=0.82)
         # play button
         play_btn = Button(numberSelection_screen, borderwidth=5, padx=23, pady=10, fg="black", bg="#09bd27", text="Play"
-                          , font=("Arial", 17, "bold"), command=self.lotto_generator())
+                          , font=("Arial", 17, "bold"), command=self.lotto_generator)
         play_btn.place(relx=0.1, rely=0.9)
         # play again button
         playAgain_btn = Button(numberSelection_screen, borderwidth=5, padx=25, pady=10, fg="black", bg="#bdbdbd",
@@ -230,161 +243,550 @@ class Selection:
         # sorting lotto numbers from smallest to largest
         lotto_numbers.sort()
         self.winningNums.config(text=lotto_numbers)
-
+        global first_winnings
+        global second_winnings
+        global third_winnings
         # function to see if any lotto numbers selected matches those numbers that were generated
-        # only if first set selected
-        if len(first_set) == 6 and len(second_set) < 6 and len(third_set) < 6:
-            # gets the value visible in the set and the generated numbers
-            same_match = set(first_set).intersection(set(lotto_numbers))
-            claim_prize = prizes
-            if len(same_match) == 0:
-                messagebox.showinfo('First Set Results', "Your correct matches are: " + "0" +
-                                    "\nYou have won: " + str(claim_prize[0]))
-            elif len(same_match) == 1:
-                messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
-                                    str(same_match) + "\nYou have won: " + str(claim_prize[1]))
-            elif len(same_match) == 2:
-                messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
-                                    str(same_match) + "\nYou have won: " + str(claim_prize[2]))
-            elif len(same_match) == 3:
-                messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
-                                    str(same_match) + "\nYou have won: " + str(claim_prize[3]))
-            elif len(same_match) == 4:
-                messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
-                                    str(same_match) + "\nYou have won: " + str(claim_prize[4]))
-            elif len(same_match) == 5:
-                messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
-                                    str(same_match) + "\nYou have won: " + str(claim_prize[5]))
-            else:
-                messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
-                                    str(same_match) + "\nYou have won: " + str(claim_prize[6]))
-        # only if first AND second set selected
-        elif len(first_set) == 6 and len(second_set) == 6 and len(third_set) < 6:
-            # gets the value visible in the sets and the generated numbers
-            same_match = set(first_set).intersection(set(lotto_numbers))
-            same_match2 = set(second_set).intersection(set(lotto_numbers))
-            claim_prize = prizes
-            if len(same_match) == 0:
-                messagebox.showinfo('First Set Results', "Your correct matches are: " + "0" +
-                                    "\nYou have won: " + str(claim_prize[0]))
-            elif len(same_match) == 1:
-                messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
-                                    str(same_match) + "\nYou have won: " + str(claim_prize[1]))
-            elif len(same_match) == 2:
-                messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
-                                    str(same_match) + "\nYou have won: " + str(claim_prize[2]))
-            elif len(same_match) == 3:
-                messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
-                                    str(same_match) + "\nYou have won: " + str(claim_prize[3]))
-            elif len(same_match) == 4:
-                messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
-                                    str(same_match) + "\nYou have won: " + str(claim_prize[4]))
-            elif len(same_match) == 5:
-                messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
-                                    str(same_match) + "\nYou have won: " + str(claim_prize[5]))
-            elif len(same_match) == 6:
-                messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
-                                    str(same_match) + "\nYou have won: " + str(claim_prize[6]))
-            if len(same_match2) == 0:
-                messagebox.showinfo('Second Set Results', "Your correct matches are: " + "0" +
-                                    "\nYou have won: " + str(claim_prize[0]))
-            elif len(same_match2) == 1:
-                messagebox.showinfo('Second Set Results', "Your number of matches are " + str(len(same_match2)) + ": " +
-                                    str(same_match2) + "\nYou have won: " + str(claim_prize[1]))
-            elif len(same_match2) == 2:
-                messagebox.showinfo('Second Set Results', "Your number of matches are " + str(len(same_match2)) + ": " +
-                                    str(same_match2) + "\nYou have won: " + str(claim_prize[2]))
-            elif len(same_match2) == 3:
-                messagebox.showinfo('Second Set Results', "Your number of matches are " + str(len(same_match2)) + ": " +
-                                    str(same_match2) + "\nYou have won: " + str(claim_prize[3]))
-            elif len(same_match2) == 4:
-                messagebox.showinfo('Second Set Results', "Your number of matches are " + str(len(same_match2)) + ": " +
-                                    str(same_match2) + "\nYou have won: " + str(claim_prize[4]))
-            elif len(same_match2) == 5:
-                messagebox.showinfo('Second Set Results', "Your number of matches are " + str(len(same_match2)) + ": " +
-                                    str(same_match2) + "\nYou have won: " + str(claim_prize[5]))
-            else:
-                messagebox.showinfo('Second Set Results', "Your number of matches are " + str(len(same_match2)) + ": " +
-                                    str(same_match2) + "\nYou have won: " + str(claim_prize[6]))
+        # only if FIRST set selected
+        try:
+            if len(first_set) == 6 and len(second_set) < 6 and len(third_set) < 6:
+                # gets the value visible in the set and the generated numbers
+                same_match = set(first_set).intersection(set(lotto_numbers))
+                claim_prize = prizes
+                # function to determine the prize amount
+                if len(same_match) == 0:
+                    first_winnings = int(claim_prize[0])
+                    messagebox.showinfo('First Set Results', "Your correct matches are: " + "0" +
+                                         "\nYou have won: " + str(claim_prize[0]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
+                    text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                    text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                    text.write("The correct matches for the first set are: 0" + '\n')
+                    text.write("The amount for the first set: " + str(claim_prize[0]) + "\n")
+                    text.close()
+                elif len(same_match) == 1:
+                    first_winnings = int(claim_prize[1])
+                    messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
+                                        str(same_match) + "\nYou have won: " + str(claim_prize[1]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
+                    text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                    text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                    text.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                    text.write("The amount for the first set: " + str(claim_prize[1]) + "\n")
+                    text.close()
+                elif len(same_match) == 2:
+                    first_winnings = int(claim_prize[2])
+                    messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
+                                        str(same_match) + "\nYou have won: " + str(claim_prize[2]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
+                    text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                    text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                    text.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                    text.write("The amount for the first set: " + str(claim_prize[2]) + "\n")
+                    text.close()
+                elif len(same_match) == 3:
+                    first_winnings = int(claim_prize[3])
+                    messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
+                                        str(same_match) + "\nYou have won: " + str(claim_prize[3]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
+                    text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                    text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                    text.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                    text.write("The amount for the first set: " + str(claim_prize[3]) + "\n")
+                    text.close()
+                elif len(same_match) == 4:
+                    first_winnings = int(claim_prize[4])
+                    messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
+                                        str(same_match) + "\nYou have won: " + str(claim_prize[4]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
+                    text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                    text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                    text.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                    text.write("The amount for the first set: " + str(claim_prize[4]) + "\n")
+                    text.close()
+                elif len(same_match) == 5:
+                    first_winnings = int(claim_prize[5])
+                    messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
+                                        str(same_match) + "\nYou have won: " + str(claim_prize[5]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
+                    text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                    text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                    text.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                    text.write("The amount for the first set: " + str(claim_prize[5]) + "\n")
+                    text.close()
+                else:
+                    first_winnings = int(claim_prize[6])
+                    messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
+                                        str(same_match) + "\nYou have won: " + str(claim_prize[6]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
+                    text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                    text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                    text.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                    text.write("The amount for the first set: " + str(claim_prize[6]) + "\n")
+                    text.close()
+            # only if FIRST and SECOND set selected
+            elif len(first_set) == 6 and len(second_set) == 6 and len(third_set) < 6:
+                # gets the value visible in the sets and the generated numbers
+                same_match = set(first_set).intersection(set(lotto_numbers))
+                same_match2 = set(second_set).intersection(set(lotto_numbers))
+                claim_prize = prizes
+                # function to determine the prize amount for the FIRST set
+                if len(same_match) == 0:
+                    first_winnings = int(claim_prize[0])
+                    messagebox.showinfo('First Set Results', "Your correct matches are: " + "0" +
+                                        "\nYou have won: " + str(claim_prize[0]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
+                    text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                    text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                    text.write("The correct matches for the first set are: 0\n")
+                    text.write("The amount for the first set: " + str(claim_prize[0]) + "\n")
+                    text.close()
+                elif len(same_match) == 1:
+                    first_winnings = int(claim_prize[1])
+                    messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
+                                        str(same_match) + "\nYou have won: " + str(claim_prize[1]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
+                    text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                    text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                    text.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                    text.write("The amount for the first set: " + str(claim_prize[1]) + "\n")
+                    text.close()
+                elif len(same_match) == 2:
+                    first_winnings = int(claim_prize[2])
+                    messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
+                                        str(same_match) + "\nYou have won: " + str(claim_prize[2]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
+                    text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                    text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                    text.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                    text.write("The amount for the first set: " + str(claim_prize[2]) + "\n")
+                    text.close()
+                elif len(same_match) == 3:
+                    first_winnings = int(claim_prize[3])
+                    messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
+                                        str(same_match) + "\nYou have won: " + str(claim_prize[3]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
+                    text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                    text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                    text.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                    text.write("The amount for the first set: " + str(claim_prize[3]) + "\n")
+                    text.close()
+                elif len(same_match) == 4:
+                    first_winnings = int(claim_prize[4])
+                    messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
+                                        str(same_match) + "\nYou have won: " + str(claim_prize[4]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
+                    text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                    text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                    text.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                    text.write("The amount for the first set: " + str(claim_prize[4]) + "\n")
+                    text.close()
+                elif len(same_match) == 5:
+                    first_winnings = int(claim_prize[5])
+                    messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
+                                        str(same_match) + "\nYou have won: " + str(claim_prize[5]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
+                    text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                    text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                    text.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                    text.write("The amount for the first set: " + str(claim_prize[5]) + "\n")
+                    text.close()
+                elif len(same_match) == 6:
+                    first_winnings = int(claim_prize[6])
+                    messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
+                                        str(same_match) + "\nYou have won: " + str(claim_prize[6]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
+                    text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                    text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                    text.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                    text.write("The amount for the first set: " + str(claim_prize[6]) + "\n")
+                    text.close()
+                # function to determine the prize amount for the SECOND set
+                if len(same_match2) == 0:
+                    second_winnings = int(claim_prize[0])
+                    messagebox.showinfo('Second Set Results', "Your correct matches are: " + "0" +
+                                        "\nYou have won: " + str(claim_prize[0]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                    text.write("The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
+                    text.write("The correct matches for the second set are: 0\n")
+                    text.write("The amount for the second set: " + str(claim_prize[0]) + "\n")
+                    text.close()
+                elif len(same_match2) == 1:
+                    second_winnings = int(claim_prize[1])
+                    messagebox.showinfo('Second Set Results', "Your number of matches are " + str(len(same_match2)) + ": " +
+                                        str(same_match2) + "\nYou have won: " + str(claim_prize[1]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                    text.write("The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
+                    text.write("The correct matches for the second set are: " + str(same_match2) + '\n')
+                    text.write("The amount for the second set: " + str(claim_prize[1]) + "\n")
+                    text.close()
+                elif len(same_match2) == 2:
+                    second_winnings = int(claim_prize[2])
+                    messagebox.showinfo('Second Set Results', "Your number of matches are " + str(len(same_match2)) + ": " +
+                                        str(same_match2) + "\nYou have won: " + str(claim_prize[2]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                    text.write("The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
+                    text.write("The correct matches for the second set are: " + str(same_match2) + '\n')
+                    text.write("The amount for the second set: " + str(claim_prize[2]) + "\n")
+                    text.close()
+                elif len(same_match2) == 3:
+                    second_winnings = int(claim_prize[3])
+                    messagebox.showinfo('Second Set Results', "Your number of matches are " + str(len(same_match2)) + ": " +
+                                        str(same_match2) + "\nYou have won: " + str(claim_prize[3]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                    text.write("The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
+                    text.write("The correct matches for the second set are: " + str(same_match2) + '\n')
+                    text.write("The amount for the second set: " + str(claim_prize[3]) + "\n")
+                    text.close()
+                elif len(same_match2) == 4:
+                    second_winnings = int(claim_prize[4])
+                    messagebox.showinfo('Second Set Results', "Your number of matches are " + str(len(same_match2)) + ": " +
+                                        str(same_match2) + "\nYou have won: " + str(claim_prize[4]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                    text.write("The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
+                    text.write("The correct matches for the second set are: " + str(same_match2) + '\n')
+                    text.write("The amount for the second set: " + str(claim_prize[4]) + "\n")
+                    text.close()
+                elif len(same_match2) == 5:
+                    second_winnings = int(claim_prize[5])
+                    messagebox.showinfo('Second Set Results', "Your number of matches are " + str(len(same_match2)) + ": " +
+                                        str(same_match2) + "\nYou have won: " + str(claim_prize[5]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                    text.write("The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
+                    text.write("The correct matches for the second set are: " + str(same_match2) + '\n')
+                    text.write("The amount for the second set: " + str(claim_prize[5]) + "\n")
+                    text.close()
+                else:
+                    second_winnings = int(claim_prize[6])
+                    messagebox.showinfo('Second Set Results', "Your number of matches are " + str(len(same_match2)) + ": " +
+                                        str(same_match2) + "\nYou have won: " + str(claim_prize[6]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                    text.write("The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
+                    text.write("The correct matches for the second set are: " + str(same_match2) + '\n')
+                    text.write("The amount for the second set: " + str(claim_prize[6]) + "\n")
+                    text.close()
 
-        # only if first, second AND third set selected
-        elif len(first_set) == 6 and len(second_set) == 6 and len(third_set) == 6:
-            # gets the value visible in the sets and the generated numbers
-            same_match = set(first_set).intersection(set(lotto_numbers))
-            same_match2 = set(second_set).intersection(set(lotto_numbers))
-            same_match3 = set(third_set).intersection(set(lotto_numbers))
-            claim_prize = prizes
-            if len(same_match) == 0:
-                messagebox.showinfo('First Set Results', "Your correct matches are: " + "0" +
-                                    "\nYou have won: " + str(claim_prize[0]))
-            elif len(same_match) == 1:
-                messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
-                                    str(same_match) + "\nYou have won: " + str(claim_prize[1]))
-            elif len(same_match) == 2:
-                messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
-                                    str(same_match) + "\nYou have won: " + str(claim_prize[2]))
-            elif len(same_match) == 3:
-                messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
-                                    str(same_match) + "\nYou have won: " + str(claim_prize[3]))
+            # only if FIRST, SECOND and THIRD set selected
+            elif len(first_set) == 6 and len(second_set) == 6 and len(third_set) == 6:
+                # gets the value visible in the sets and the generated numbers
+                same_match = set(first_set).intersection(set(lotto_numbers))
+                same_match2 = set(second_set).intersection(set(lotto_numbers))
+                same_match3 = set(third_set).intersection(set(lotto_numbers))
+                claim_prize = prizes
+                # function to determine prize amount for FIRST set
+                if len(same_match) == 0:
+                    first_winnings = int(claim_prize[0])
+                    messagebox.showinfo('First Set Results', "Your correct matches are: " + "0" +
+                                        "\nYou have won: " + str(claim_prize[0]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
+                    text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                    text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                    text.write("The correct matches for the first set are: 0\n")
+                    text.write("The amount for the first set: " + str(claim_prize[0]) + "\n")
+                    text.close()
+                elif len(same_match) == 1:
+                    first_winnings = int(claim_prize[1])
+                    messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
+                                        str(same_match) + "\nYou have won: " + str(claim_prize[1]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
+                    text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                    text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                    text.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                    text.write("The amount for the first set: " + str(claim_prize[1]) + "\n")
+                    text.close()
+                elif len(same_match) == 2:
+                    first_winnings = int(claim_prize[2])
+                    messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
+                                        str(same_match) + "\nYou have won: " + str(claim_prize[2]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
+                    text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                    text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                    text.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                    text.write("The amount for the first set: " + str(claim_prize[2]) + "\n")
+                    text.close()
+                elif len(same_match) == 3:
+                    first_winnings = int(claim_prize[3])
+                    messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
+                                        str(same_match) + "\nYou have won: " + str(claim_prize[3]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
+                    text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                    text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                    text.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                    text.write("The amount for the first set: " + str(claim_prize[3]) + "\n")
+                    text.close()
+                elif len(same_match) == 4:
+                    first_winnings = int(claim_prize[4])
+                    messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
+                                        str(same_match) + "\nYou have won: " + str(claim_prize[4]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
+                    text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                    text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                    text.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                    text.write("The amount for the first set: " + str(claim_prize[4]) + "\n")
+                    text.close()
+                elif len(same_match) == 5:
+                    first_winnings = int(claim_prize[5])
+                    messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
+                                        str(same_match) + "\nYou have won: " + str(claim_prize[5]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
+                    text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                    text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                    text.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                    text.write("The amount for the first set: " + str(claim_prize[5]) + "\n")
+                    text.close()
+                elif len(same_match) == 6:
+                    first_winnings = int(claim_prize[6])
+                    messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
+                                        str(same_match) + "\nYou have won: " + str(claim_prize[6]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
+                    text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                    text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                    text.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                    text.write("The amount for the first set: " + str(claim_prize[6]) + "\n")
+                    text.close()
+                # function to determine prize amount for SECOND set
+                if len(same_match2) == 0:
+                    second_winnings = int(claim_prize[0])
+                    messagebox.showinfo('Second Set Results', "Your correct matches are: " + "0" +
+                                        "\nYou have won: " + str(claim_prize[0]))
+                    second_winnings = int(claim_prize[0])
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                    text.write("The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
+                    text.write("The correct matches for the second set are: 0\n")
+                    text.write("The amount for the second set: " + str(claim_prize[0]) + "\n")
+                    text.close()
+                elif len(same_match2) == 1:
+                    second_winnings = int(claim_prize[1])
+                    messagebox.showinfo('Second Set Results', "Your number of matches are " + str(len(same_match2)) + ": " +
+                                        str(same_match2) + "\nYou have won: " + str(claim_prize[1]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                    text.write("The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
+                    text.write("The correct matches for the second set are: " + str(same_match2) + '\n')
+                    text.write("The amount for the second set: " + str(claim_prize[1]) + "\n")
+                    text.close()
+                elif len(same_match2) == 2:
+                    second_winnings = int(claim_prize[2])
+                    messagebox.showinfo('Second Set Results', "Your number of matches are " + str(len(same_match2)) + ": " +
+                                        str(same_match2) + "\nYou have won: " + str(claim_prize[2]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                    text.write("The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
+                    text.write("The correct matches for the second set are: " + str(same_match2) + '\n')
+                    text.write("The amount for the second set: " + str(claim_prize[2]) + "\n")
+                    text.close()
+                elif len(same_match2) == 3:
+                    second_winnings = int(claim_prize[3])
+                    messagebox.showinfo('Second Set Results', "Your number of matches are " + str(len(same_match2)) + ": " +
+                                        str(same_match2) + "\nYou have won: " + str(claim_prize[3]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                    text.write("The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
+                    text.write("The correct matches for the second set are: " + str(same_match2) + '\n')
+                    text.write("The amount for the second set: " + str(claim_prize[3]) + "\n")
+                    text.close()
+                elif len(same_match2) == 4:
+                    second_winnings = int(claim_prize[4])
+                    messagebox.showinfo('Second Set Results', "Your number of matches are " + str(len(same_match2)) + ": " +
+                                        str(same_match2) + "\nYou have won: " + str(claim_prize[4]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                    text.write("The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
+                    text.write("The correct matches for the second set are: " + str(same_match2) + '\n')
+                    text.write("The amount for the second set: " + str(claim_prize[4]) + "\n")
+                    text.close()
+                elif len(same_match2) == 5:
+                    second_winnings = int(claim_prize[5])
+                    messagebox.showinfo('Second Set Results', "Your number of matches are " + str(len(same_match2)) + ": " +
+                                        str(same_match2) + "\nYou have won: " + str(claim_prize[5]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                    text.write("The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
+                    text.write("The correct matches for the second set are: " + str(same_match2) + '\n')
+                    text.write("The amount for the second set: " + str(claim_prize[5]) + "\n")
+                    text.close()
+                elif len(same_match2) == 6 :
+                    second_winnings = int(claim_prize[6])
+                    messagebox.showinfo('Second Set Results', "Your number of matches are " + str(len(same_match2)) + ": " +
+                                        str(same_match2) + "\nYou have won: " + str(claim_prize[6]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                    text.write("The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
+                    text.write("The correct matches for the second set are: " + str(same_match2) + '\n')
+                    text.write("The amount for the second set: " + str(claim_prize[6]) + "\n")
+                    text.close()
+                # function to determine prize amount for THIRD set
+                if len(same_match3) == 0:
+                    third_winnings = int(claim_prize[0])
+                    messagebox.showinfo('Third Set Results', "Your correct matches are: " + "0" +
+                                        "\nYou have won: " + str(claim_prize[0]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write("Client's numbers for the third set are: " + str(third_set) + "\n")
+                    text.write("The number of correct matches in the third set is: " + str(len(same_match3)) + '\n')
+                    text.write("The correct matches for the third set are: 0\n")
+                    text.write("The amount for the third set: " + str(claim_prize[0]) + "\n")
+                    text.close()
+                elif len(same_match3) == 1:
+                    third_winnings = int(claim_prize[1])
+                    messagebox.showinfo('Third Set Results', "Your number of matches are " + str(len(same_match3)) + ": " +
+                                        str(same_match3) + "\nYou have won: " + str(claim_prize[1]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write("Client's numbers for the third set are: " + str(third_set) + "\n")
+                    text.write("The number of correct matches in the third set is: " + str(len(same_match3)) + '\n')
+                    text.write("The correct matches for the third set are: " + str(same_match3) + '\n')
+                    text.write("The amount for the third set: " + str(claim_prize[1]) + "\n")
+                    text.close()
+                elif len(same_match3) == 2:
+                    third_winnings = int(claim_prize[2])
+                    messagebox.showinfo('Third Set Results', "Your number of matches are " + str(len(same_match3)) + ": " +
+                                        str(same_match3) + "\nYou have won: " + str(claim_prize[2]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write("Client's numbers for the third set are: " + str(third_set) + "\n")
+                    text.write("The number of correct matches in the third set is: " + str(len(same_match3)) + '\n')
+                    text.write("The correct matches for the third set are: " + str(same_match3) + '\n')
+                    text.write("The amount for the third set: " + str(claim_prize[2]) + "\n")
+                    text.close()
+                elif len(same_match3) == 3:
+                    third_winnings = int(claim_prize[3])
+                    messagebox.showinfo('Third Set Results', "Your number of matches are " + str(len(same_match3)) + ": " +
+                                        str(same_match3) + "\nYou have won: " + str(claim_prize[3]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write("Client's numbers for the third set are: " + str(third_set) + "\n")
+                    text.write("The number of correct matches in the third set is: " + str(len(same_match3)) + '\n')
+                    text.write("The correct matches for the third set are: " + str(same_match3) + '\n')
+                    text.write("The amount for the third set: " + str(claim_prize[3]) + "\n")
+                    text.close()
+                elif len(same_match3) == 4:
+                    third_winnings = int(claim_prize[4])
+                    messagebox.showinfo('Third Set Results', "Your number of matches are " + str(len(same_match3)) + ": " +
+                                        str(same_match3) + "\nYou have won: " + str(claim_prize[4]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write("Client's numbers for the third set are: " + str(third_set) + "\n")
+                    text.write("The number of correct matches in the third set is: " + str(len(same_match3)) + '\n')
+                    text.write("The correct matches for the third set are: " + str(same_match3) + '\n')
+                    text.write("The amount for the third set: " + str(claim_prize[4]) + "\n")
+                    text.close()
+                elif len(same_match3) == 5:
+                    third_winnings = int(claim_prize[5])
+                    messagebox.showinfo('Third Set Results', "Your number of matches are " + str(len(same_match3)) + ": " +
+                                        str(same_match3) + "\nYou have won: " + str(claim_prize[5]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write("Client's numbers for the third set are: " + str(third_set) + "\n")
+                    text.write("The number of correct matches in the third set is: " + str(len(same_match3)) + '\n')
+                    text.write("The correct matches for the third set are: " + str(same_match3) + '\n')
+                    text.write("The amount for the third set: " + str(claim_prize[5]) + "\n")
+                    text.close()
+                else:
+                    third_winnings = int(claim_prize[6])
+                    messagebox.showinfo('Third Set Results', "Your number of matches are " + str(len(same_match3)) + ": " +
+                                        str(same_match3) + "\nYou have won: " + str(claim_prize[6]))
+                    # information that will be written on a separate text file
+                    text = open("Lotto.txt", "a")
+                    text.write("Client's numbers for the third set are: " + str(third_set) + "\n")
+                    text.write("The number of correct matches in the third set is: " + str(len(same_match3)) + '\n')
+                    text.write("The correct matches for the third set are: " + str(same_match3) + '\n')
+                    text.write("The amount for the third set: " + str(claim_prize[6]) + "\n")
+                    text.close()
+        finally:
+            if len(first_set) == 6 and len(second_set) < 6 and len(third_set) < 6:
+                total_prize_amount = first_winnings
+                self.total_label.config(text=total_prize_amount)
+            elif len(first_set) == 6 and len(second_set) == 6 and len(third_set) < 6:
+                total_prize_amount = first_winnings + second_winnings
+                self.total_label.config(text=total_prize_amount)
+            elif len(first_set) == 6 and len(second_set) == 6 and len(third_set) == 6:
+                total_prize_amount = first_winnings + second_winnings + third_winnings
+                self.total_label.config(text=total_prize_amount)
 
-            elif len(same_match) == 4:
-                messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
-                                    str(same_match) + "\nYou have won: " + str(claim_prize[4]))
 
-            elif len(same_match) == 5:
-                messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
-                                    str(same_match) + "\nYou have won: " + str(claim_prize[5]))
 
-            elif len(same_match) == 6:
-                messagebox.showinfo('First Set Results', "Your number of matches are " + str(len(same_match)) + ": " +
-                                    str(same_match) + "\nYou have won: " + str(claim_prize[6]))
-
-            if len(same_match2) == 0:
-                messagebox.showinfo('Second Set Results', "Your correct matches are: " + "0" +
-                                    "\nYou have won: " + str(claim_prize[0]))
-            elif len(same_match2) == 1:
-                messagebox.showinfo('Second Set Results', "Your number of matches are " + str(len(same_match2)) + ": " +
-                                    str(same_match2) + "\nYou have won: " + str(claim_prize[1]))
-            elif len(same_match2) == 2:
-                messagebox.showinfo('Second Set Results', "Your number of matches are " + str(len(same_match2)) + ": " +
-                                    str(same_match2) + "\nYou have won: " + str(claim_prize[2]))
-            elif len(same_match2) == 3:
-                messagebox.showinfo('Second Set Results', "Your number of matches are " + str(len(same_match2)) + ": " +
-                                    str(same_match2) + "\nYou have won: " + str(claim_prize[3]))
-            elif len(same_match2) == 4:
-                messagebox.showinfo('Second Set Results', "Your number of matches are " + str(len(same_match2)) + ": " +
-                                    str(same_match2) + "\nYou have won: " + str(claim_prize[4]))
-            elif len(same_match2) == 5:
-                messagebox.showinfo('Second Set Results', "Your number of matches are " + str(len(same_match2)) + ": " +
-                                    str(same_match2) + "\nYou have won: " + str(claim_prize[5]))
-            else:
-                messagebox.showinfo('Second Set Results', "Your number of matches are " + str(len(same_match2)) + ": " +
-                                    str(same_match2) + "\nYou have won: " + str(claim_prize[6]))
-            if len(same_match3) == 0:
-                messagebox.showinfo('Third Set Results', "Your correct matches are: " + "0" +
-                                    "\nYou have won: " + str(claim_prize[0]))
-            elif len(same_match3) == 1:
-                messagebox.showinfo('Third Set Results', "Your number of matches are " + str(len(same_match3)) + ": " +
-                                    str(same_match3) + "\nYou have won: " + str(claim_prize[1]))
-            elif len(same_match3) == 2:
-                messagebox.showinfo('Third Set Results', "Your number of matches are " + str(len(same_match3)) + ": " +
-                                    str(same_match3) + "\nYou have won: " + str(claim_prize[2]))
-            elif len(same_match3) == 3:
-                messagebox.showinfo('Third Set Results', "Your number of matches are " + str(len(same_match3)) + ": " +
-                                    str(same_match3) + "\nYou have won: " + str(claim_prize[3]))
-            elif len(same_match3) == 4:
-                messagebox.showinfo('Third Set Results', "Your number of matches are " + str(len(same_match3)) + ": " +
-                                    str(same_match3) + "\nYou have won: " + str(claim_prize[4]))
-            elif len(same_match3) == 5:
-                messagebox.showinfo('Third Set Results', "Your number of matches are " + str(len(same_match3)) + ": " +
-                                    str(same_match3) + "\nYou have won: " + str(claim_prize[5]))
-            else:
-                messagebox.showinfo('Third Set Results', "Your number of matches are " + str(len(same_match3)) + ": " +
-                                    str(same_match3) + "\nYou have won: " + str(claim_prize[6]))
+    # def total(self):
+    #     global first_winnings
+    #     global second_winnings
+    #     global third_winnings
+    #     if len(first_set) == 6 and len(second_set) < 6 and len(third_set) < 6:
+    #         total_prize_amount = first_winnings
+    #         self.total_label.config(text=total_prize_amount)
+    #     elif len(first_set) == 6 and len(second_set) == 6 and len(third_set) < 6:
+    #         total_prize_amount = first_winnings + second_winnings
+    #         self.total_label.config(text=total_prize_amount)
+    #     elif len(first_set) == 6 and len(second_set) == 6 and len(third_set) == 6:
+    #         total_prize_amount = first_winnings + second_winnings + third_winnings
+    #         self.total_label.config(text=total_prize_amount)
 
     # function to claim prize
     def claim_prize(self):
-        numberSelection_screen.withdraw()
+        numberSelection_screen.destroy()
         import screen_3
 
     # function to replay

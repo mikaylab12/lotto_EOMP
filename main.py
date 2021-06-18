@@ -57,36 +57,22 @@ class User:
         self.residential_address_entry.place(relx=0.5, rely=0.69)
         # login button
         login_btn = Button(login_screen, borderwidth=5, padx=15, pady=10, fg="black", bg="#09bd27", text="Login",
-                           font=("Arial", 17, "bold"), command=self.age_calc)
+                           font=("Arial", 17, "bold"), command=self.validating_inputs)
         login_btn.place(relx=0.1, rely=0.86)
         # clear button
         clear_btn = Button(login_screen, borderwidth=5, padx=25, pady=10, fg="black", bg="#bdbdbd", text="Clear",
-                          font=("Arial", 17, "bold"), command=self.clear)
+                           font=("Arial", 17, "bold"), command=self.clear)
         clear_btn.place(relx=0.43, rely=0.86)
         # exit button
         exit_btn = Button(login_screen, borderwidth=5, padx=25, pady=10, fg="black", bg="red", text="Exit",
                           font=("Arial", 17, "bold"), command=self.exit)
         exit_btn.place(relx=0.755, rely=0.86)
 
-    def age_calc(self):
-        try:
-            fh = open("Entries.txt", "a")
-            fh.write(self.name_entry.get())
-            fh.write('\n')
-            fh.write(self.id_entry.get())
-            fh.write('\n')
-            fh.write(self.email_entry.get())
-            fh.write('\n')
-            fh.write(self.telephone_number_entry.get())
-            fh.write('\n')
-            fh.write(self.residential_address_entry.get())
-            fh.write('\n')
+    def validating_inputs(self):
+        def age_calc():
             try:
                 # current date
                 date = datetime.today()
-                # validate email
-                valid = validate_email(self.email_entry.get())
-                # email = valid.email
                 id_number = rsaidnumber.parse(self.id_entry.get())
                 found = True
                 if found:
@@ -94,16 +80,44 @@ class User:
                     current_age = int((date - dob) // timedelta(days=365.25))
                     if int(current_age) >= 18:
                         messagebox.showinfo("Valid Details", "Let's Play!")
-                        login_screen.withdraw()
+                        login_screen.destroy()
+                        import screen_2
+                    elif not found:
+                        messagebox.showinfo("Invalid Details", "Invalid ID number. Try again.")
                     else:
                         messagebox.showinfo("Underage", "You are too young to play.\nPlease try again in " + str(
                             18 - int(current_age)) + " years")
-                else:
-                    messagebox.showinfo("Invalid Details", "Invalid ID number. Try again.")
+                # else:
+                #     messagebox.showinfo("Invalid Details", "Invalid ID number. Try again.")
+            except ValueError:
+                messagebox.showinfo("Invalid ID", "\nPlease enter a valid South African ID number that consists of 13"
+                                    " digits.")
+
+        def email_validation():
+            try:
+                # validate email
+                valid = validate_email(self.email_entry.get())
+                # email = valid.email
+                # found = True
+                if valid is True:
+                    return 1
+
             except EmailNotValidError:
                 messagebox.showinfo("Invalid Email Address", "\nPlease enter a valid email address.")
-        except ValueError:
-            messagebox.showinfo("Invalid ID", "\nPlease enter a valid South African ID number that consists of 13 digits.")
+
+        if age_calc() == 1 and email_validation() == 1:
+            fh = open("Entries.txt", "a")
+            fh.write("Name and Surname: " + self.name_entry.get() + "\n")
+            fh.write('\n')
+            fh.write("ID Number: " + self.id_entry.get() + "\n")
+            fh.write('\n')
+            fh.write("Email Address: " + self.email_entry.get() + "\n")
+            fh.write('\n')
+            fh.write("Contact Number: " + self.telephone_number_entry.get() + "\n")
+            fh.write('\n')
+            fh.write("Residential Address: " + self.residential_address_entry.get() + "\n")
+            fh.write('\n')
+            fh.close()
 
     # def age_calc(self):
     #     try:
@@ -215,6 +229,7 @@ class User:
         self.email_entry.delete(0, END)
         self.telephone_number_entry.delete(0, END)
         self.residential_address_entry.delete(0, END)
+
     def exit(self):
         login_screen.destroy()
 

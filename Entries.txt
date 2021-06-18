@@ -53,3 +53,33 @@ miks@trade245,com
 miks@trade245,com
 
 
+Name and Surname: Miks
+ID Number: 001112014988
+Email Address: miks@gmail,com
+Contact Number: 0826889551
+Residential Address: 53 Station road 
+Name and Surname: Miks
+ID Number: 0011120149080
+Email Address: miks@gmail,com
+Contact Number: 0826889551
+Residential Address: 53 Station road 
+Name and Surname: 
+ID Number: 0011120149080
+Email Address: miks@gmail,com
+Contact Number: 
+Residential Address: 
+Name and Surname: 
+ID Number: 0011120149088
+Email Address: miks@gmail,com
+Contact Number: 
+Residential Address: 
+Name and Surname: 
+ID Number: 0011120149080
+Email Address: miks@gmail,com
+Contact Number: 
+Residential Address: 
+Name and Surname: 
+ID Number: 0011120149080
+Email Address: mika
+Contact Number: 
+Residential Address: 

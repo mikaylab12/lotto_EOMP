@@ -2,6 +2,7 @@
 # currency conversion screen
 from tkinter import *
 from tkinter import messagebox
+from screen_2 import total_amount
 import random
 from PIL import Image, ImageTk
 currency_conversion_screen = Tk()
@@ -41,17 +42,17 @@ class Conversion:
         convert_list.place(relx=0.36, rely=0.3)
 
         # convert function
-        def convert():
-            try:
-                amount = float(amount_entry.get())
-                print(data['conversion_rates'][convert_list.get(ACTIVE)])
-                converted_amount = amount / data['conversion_rates'][convert_list.get(ACTIVE)]
-                usd_answer['text'] = round(converted_amount, 2)  # round conversion off to 2 decimal places
-            except ValueError:
-                messagebox.showerror("Error", "Invalid input.\nPlease enter integers.")
-                amount_entry.delete(0, END)
-                usd_answer.config(text="")
-                convert_list.select_clear(0, END)
+    def convert(self):
+        try:
+            amount = float(amount_entry.get())
+            print(data['conversion_rates'][convert_list.get(ACTIVE)])
+            converted_amount = amount / data['conversion_rates'][convert_list.get(ACTIVE)]
+            usd_answer['text'] = round(converted_amount, 2)  # round conversion off to 2 decimal places
+        except ValueError:
+            messagebox.showerror("Error", "Invalid input.\nPlease enter integers.")
+            amount_entry.delete(0, END)
+            usd_answer.config(text="")
+            convert_list.select_clear(0, END)
 
 
 converting = Conversion(currency_conversion_screen)

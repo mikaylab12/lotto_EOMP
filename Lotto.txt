@@ -1,0 +1,135 @@
+[26, 29, 32, 37, 45, 48]
+.!label2
+ The amount for the first set0[13, 20, 23, 28, 30, 39]
+
+self.first_set
+ The amount for the first set: 0[2, 5, 10, 11, 40, 42]
+self.first_set
+ The amount for the first set: 0[1, 2, 41, 43, 44, 47]
+.!label2
+ The amount for the first set: 0
+[3, 10, 16, 26, 30, 45]
+
+.!label2
+ The amount for the first set: 20.0
+[10, 15, 31, 37, 42, 43]
+[7, 17, 27, 37, 47, 3]
+ The amount for the first set: 0
+
+ The winning numbers are: [7, 14, 23, 28, 34, 48]
+Client's numbers are: [8, 18, 28, 38, 48, 4]
+ The amount for the first set: 20.0
+
+The winning numbers are: [13, 27, 28, 35, 38, 46]
+Client's numbers are: [7, 17, 27, 37, 47, 3]
+The number of correct matches is: 1
+The amount for the first set: 0
+
+The winning numbers are: [1, 6, 7, 21, 38, 44]
+Client's numbers are: [7, 17, 27, 37, 47, 3]
+The number of correct matches is: 1
+The amount for the first set: 0
+
+ The winning numbers are: [14, 18, 21, 22, 30, 40]
+Client's numbers are: [7, 17, 27, 37, 47, 3]
+ The amount for the first set: 0
+
+ The winning numbers are: [21, 24, 33, 38, 39, 42]
+Client's numbers are: [7, 17, 27, 37, 47, 3]
+ The amount for the first set: 0
+
+The winning numbers are: [1, 4, 8, 17, 39, 46]
+Client's numbers are: [9, 19, 29, 39, 49, 6]
+The number of correct matches is: 1
+The correct matches are: {39}
+The amount for the first set: 0
+
+The winning numbers are: [4, 5, 10, 36, 47, 48]
+Client's numbers are: [9, 19, 29, 39, 49, 6]
+The number of correct matches is: 0
+The correct matches are: 0
+The amount for the first set: 0
+
+The winning numbers are: [1, 2, 25, 27, 28, 47]
+Client's numbers for the first set are: [5, 15, 25, 35, 45, 1]
+The number of correct matches in the first set is: 2
+The correct matches for the first set are: {1, 25}
+The amount for the first set: 20.0
+Client's numbers for the second set are: [6, 16, 26, 36, 46, 2]
+The number of correct matches in the second set is: 1
+The correct matches for the second set are: {2}
+The amount for the second set: 0
+Client's numbers for the third set are: [7, 17, 27, 37, 47, 3]
+The number of correct matches in the third set is: 2
+The correct matches for the third set are: {27, 47}
+The amount for the third set: 20.0
+
+The winning numbers are: [6, 12, 19, 30, 36, 39]
+Client's numbers for the first set are: [45, 37, 38, 27, 16, 17]
+The number of correct matches in the first set is: 0
+The correct matches for the first set are: 0
+The amount for the first set: 0
+Client's numbers for the second set are: [39, 40, 48, 49, 41, 30]
+The number of correct matches in the second set is: 2
+The correct matches for the second set are: {30, 39}
+The amount for the second set: 20.0
+Client's numbers for the third set are: [19, 8, 7, 6, 5, 4]
+The number of correct matches in the third set is: 2
+The correct matches for the third set are: {19, 6}
+The amount for the third set: 20.0
+
+The winning numbers are: [2, 4, 17, 33, 35, 43]
+Client's numbers for the first set are: [6, 16, 26, 36, 46, 4]
+The number of correct matches in the first set is: 1
+The correct matches for the first set are: {4}
+The amount for the first set: 0
+Client's numbers for the second set are: [8, 18, 28, 38, 48, 5]
+The number of correct matches in the second set is: 0
+The correct matches for the second set are: 0
+The amount for the second set: 0
+Client's numbers for the third set are: [10, 20, 30, 40, 9, 11]
+The number of correct matches in the third set is: 0
+The correct matches for the third set are: 0
+The amount for the third set: 0
+
+The winning numbers are: [4, 15, 18, 41, 45, 48]
+Client's numbers for the first set are: [6, 16, 26, 36, 46, 4]
+The number of correct matches in the first set is: 1
+The correct matches for the first set are: {4}
+The amount for the first set: 0
+Client's numbers for the second set are: [8, 18, 28, 38, 48, 5]
+The number of correct matches in the second set is: 2
+The correct matches for the second set are: {48, 18}
+The amount for the second set: 20.0
+Client's numbers for the third set are: [10, 20, 30, 40, 9, 11]
+The number of correct matches in the third set is: 0
+The correct matches for the third set are: 0
+The amount for the third set: 0
+
+The winning numbers are: [5, 11, 16, 30, 35, 47]
+Client's numbers for the first set are: [6, 16, 26, 36, 46, 4]
+The number of correct matches in the first set is: 1
+The correct matches for the first set are: {16}
+The amount for the first set: 0
+Client's numbers for the second set are: [8, 18, 28, 38, 48, 5]
+The number of correct matches in the second set is: 1
+The correct matches for the second set are: {5}
+The amount for the second set: 0
+Client's numbers for the third set are: [10, 20, 30, 40, 9, 11]
+The number of correct matches in the third set is: 2
+The correct matches for the third set are: {11, 30}
+The amount for the third set: 20.0
+
+The winning numbers are: [2, 19, 21, 36, 43, 46]
+Client's numbers for the first set are: [6, 16, 26, 36, 46, 4]
+The number of correct matches in the first set is: 2
+The correct matches for the first set are: {36, 46}
+The amount for the first set: 20.0
+Client's numbers for the second set are: [8, 18, 28, 38, 48, 5]
+The number of correct matches in the second set is: 0
+The correct matches for the second set are: 0
+The amount for the second set: 0
+Client's numbers for the third set are: [10, 20, 30, 40, 9, 11]
+The number of correct matches in the third set is: 0
+The correct matches for the third set are: 0
+The amount for the third set: 0
