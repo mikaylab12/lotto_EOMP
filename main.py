@@ -24,8 +24,27 @@ img_logo = ImageTk.PhotoImage(Image.open("lotto_name.png"))
 canvas.create_image(150, 5, anchor=N, image=img_logo)
 
 
+# date and time function
+def date_of_playing():
+    date_of_play = datetime.date()
+    fh = open("Player_info.txt", "a")
+    fh.write("\n\nNew Player:")
+    fh.write("Date: " + str(date_of_play) + '\n')
+    fh.close()
+    return date_of_play
+
+
+def time_of_playing():
+    time_of_play = datetime.time()
+    fh = open("Player_info.txt", "a")
+    fh.write("Time: " + str(time_of_play) + '\n')
+    fh.close()
+    return time_of_play
+
+# function for unique player id
+
 # function to calculate age
-class User:
+class User(object):
     def __init__(self, master):
         # creating frame for labels and entries
         self.login_frame = Frame(master, bg="#bdbdbd", width=630, height=400)
@@ -76,16 +95,6 @@ class User:
         global nr_of_games
         global telephone_number
 
-    def player_id(self):
-        player_id = uuid.uuid4()
-        fh = open("Player_info.txt", "a")
-        fh.write("New Player:\n")
-        fh.write = ("Date: " + str(date.today()) + '\n')
-        fh.write = ("Time: " + str(time) + '\n')
-        fh.write = ("Player Unique ID: " + str(player_id) + "\n")
-        fh.close()
-        return player_id
-
     def validating_inputs(self):
         def age_calc():
             try:
@@ -130,17 +139,22 @@ class User:
 
         if age_calc() == 1 and email_validation() == 1 and cell_num_validation() == 1:
             fh = open("Player_info.txt", "a")
-            fh.write("Name and Surname: " + self.name_entry.get() + '\n')
+            fh.write("\nName and Surname: " + self.name_entry.get() + '\n')
             fh.write("ID Number: " + self.id_entry.get() + '\n')
-            fh.write("Email Address: " + self.email_entry.get() + '\n')
-            fh.write("Contact Number: " + self.telephone_number_entry.get() + '\n')
-            fh.write("Player ID: " + str(self.player_id) + '\n')
+            fh.write("Email: " + self.email_entry.get() + '\n')
+            fh.write("Number: " + self.telephone_number_entry.get() + '\n')
             fh.write("Residential Address: " + self.residential_address_entry.get() + "\n")
             fh.close()
             messagebox.showinfo("Valid Details", "Let's Play!")
             login_screen.destroy()
             self.screen_2()
 
+    def player_id(self):
+        unique_player_id = uuid.uuid4()
+        fh = open("Player_info.txt", "a")
+        fh.write("\nPlayer Unique ID: " + str(unique_player_id) + '\n')
+        fh.close()
+        return unique_player_id
 
     def clear(self):
         self.id_entry.delete(0, END)
@@ -417,7 +431,7 @@ class User:
                             messagebox.showinfo('First Set Results', "Your correct matches are: " + "0" +
                                                 "\nYou have won: R" + str(claim_prize[0]))
                             # play sound
-                            playsound("ES_CashRegister5-SFXProducer.mp3")
+                            playsound("sad_trumpet.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
@@ -433,7 +447,7 @@ class User:
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[1]))
                             # play sound
-                            playsound("ES_CashRegister5-SFXProducer.mp3")
+                            playsound("sad_trumpet.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
@@ -449,7 +463,7 @@ class User:
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[2]))
                             # play sound
-                            playsound("ES_TrumpetSad-SFX Producer.mp3")
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
@@ -464,6 +478,8 @@ class User:
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[3]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
@@ -478,6 +494,8 @@ class User:
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[4]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
@@ -492,6 +510,8 @@ class User:
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[5]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
@@ -506,6 +526,8 @@ class User:
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[6]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
@@ -527,6 +549,8 @@ class User:
                             first_winnings = float(claim_prize[0])
                             messagebox.showinfo('First Set Results', "Your correct matches are: " + "0" +
                                                 "\nYou have won: R" + str(claim_prize[0]))
+                            # play sound
+                            playsound("sad_trumpet.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
@@ -541,6 +565,8 @@ class User:
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[1]))
+                            # play sound
+                            playsound("sad_trumpet.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
@@ -555,6 +581,8 @@ class User:
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[2]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
@@ -569,6 +597,8 @@ class User:
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[3]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
@@ -583,6 +613,8 @@ class User:
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[4]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
@@ -597,6 +629,8 @@ class User:
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[5]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
@@ -611,6 +645,8 @@ class User:
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[6]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
@@ -625,6 +661,8 @@ class User:
                             second_winnings = float(claim_prize[0])
                             messagebox.showinfo('Second Set Results', "Your correct matches are: " + "0" +
                                                 "\nYou have won: R" + str(claim_prize[0]))
+                            # play sound
+                            playsound("sad_trumpet.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
@@ -637,6 +675,8 @@ class User:
                             messagebox.showinfo('Second Set Results',
                                                 "Your number of matches are " + str(len(same_match2)) + ": " +
                                                 str(same_match2) + "\nYou have won: R" + str(claim_prize[1]))
+                            # play sound
+                            playsound("sad_trumpet.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
@@ -650,6 +690,8 @@ class User:
                             messagebox.showinfo('Second Set Results',
                                                 "Your number of matches are " + str(len(same_match2)) + ": " +
                                                 str(same_match2) + "\nYou have won: R" + str(claim_prize[2]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
@@ -663,6 +705,8 @@ class User:
                             messagebox.showinfo('Second Set Results',
                                                 "Your number of matches are " + str(len(same_match2)) + ": " +
                                                 str(same_match2) + "\nYou have won: R" + str(claim_prize[3]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
@@ -676,6 +720,8 @@ class User:
                             messagebox.showinfo('Second Set Results',
                                                 "Your number of matches are " + str(len(same_match2)) + ": " +
                                                 str(same_match2) + "\nYou have won: R" + str(claim_prize[4]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
@@ -689,6 +735,8 @@ class User:
                             messagebox.showinfo('Second Set Results',
                                                 "Your number of matches are " + str(len(same_match2)) + ": " +
                                                 str(same_match2) + "\nYou have won: R" + str(claim_prize[5]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
@@ -702,6 +750,8 @@ class User:
                             messagebox.showinfo('Second Set Results',
                                                 "Your number of matches are " + str(len(same_match2)) + ": " +
                                                 str(same_match2) + "\nYou have won: R" + str(claim_prize[6]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
@@ -724,6 +774,8 @@ class User:
                             first_winnings = float(claim_prize[0])
                             messagebox.showinfo('First Set Results', "Your correct matches are: " + "0" +
                                                 "\nYou have won: R" + str(claim_prize[0]))
+                            # play sound
+                            playsound("sad_trumpet.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
@@ -738,6 +790,8 @@ class User:
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[1]))
+                            # play sound
+                            playsound("sad_trumpet.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
@@ -752,6 +806,8 @@ class User:
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[2]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
@@ -766,6 +822,8 @@ class User:
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[3]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
@@ -780,6 +838,8 @@ class User:
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[4]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
@@ -794,6 +854,8 @@ class User:
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[5]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
@@ -808,6 +870,8 @@ class User:
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[6]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
@@ -822,6 +886,8 @@ class User:
                             second_winnings = float(claim_prize[0])
                             messagebox.showinfo('Second Set Results', "Your correct matches are: " + "0" +
                                                 "\nYou have won: R" + str(claim_prize[0]))
+                            # play sound
+                            playsound("sad_trumpet.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
@@ -835,6 +901,8 @@ class User:
                             messagebox.showinfo('Second Set Results',
                                                 "Your number of matches are " + str(len(same_match2)) + ": " +
                                                 str(same_match2) + "\nYou have won: R" + str(claim_prize[1]))
+                            # play sound
+                            playsound("sad_trumpet.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
@@ -848,6 +916,8 @@ class User:
                             messagebox.showinfo('Second Set Results',
                                                 "Your number of matches are " + str(len(same_match2)) + ": " +
                                                 str(same_match2) + "\nYou have won: R" + str(claim_prize[2]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
@@ -861,6 +931,8 @@ class User:
                             messagebox.showinfo('Second Set Results',
                                                 "Your number of matches are " + str(len(same_match2)) + ": " +
                                                 str(same_match2) + "\nYou have won: R" + str(claim_prize[3]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
@@ -874,6 +946,8 @@ class User:
                             messagebox.showinfo('Second Set Results',
                                                 "Your number of matches are " + str(len(same_match2)) + ": " +
                                                 str(same_match2) + "\nYou have won: R" + str(claim_prize[4]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
@@ -887,6 +961,8 @@ class User:
                             messagebox.showinfo('Second Set Results',
                                                 "Your number of matches are " + str(len(same_match2)) + ": " +
                                                 str(same_match2) + "\nYou have won: R" + str(claim_prize[5]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
@@ -900,6 +976,8 @@ class User:
                             messagebox.showinfo('Second Set Results',
                                                 "Your number of matches are " + str(len(same_match2)) + ": " +
                                                 str(same_match2) + "\nYou have won: R" + str(claim_prize[6]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
@@ -913,6 +991,8 @@ class User:
                             third_winnings = float(claim_prize[0])
                             messagebox.showinfo('Third Set Results', "Your correct matches are: " + "0" +
                                                 "\nYou have won: R" + str(claim_prize[0]))
+                            # play sound
+                            playsound("sad_trumpet.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Client's numbers for the third set are: " + str(third_set) + "\n")
@@ -925,6 +1005,8 @@ class User:
                             messagebox.showinfo('Third Set Results',
                                                 "Your number of matches are " + str(len(same_match3)) + ": " +
                                                 str(same_match3) + "\nYou have won: R" + str(claim_prize[1]))
+                            # play sound
+                            playsound("sad_trumpet.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Client's numbers for the third set are: " + str(third_set) + "\n")
@@ -937,6 +1019,8 @@ class User:
                             messagebox.showinfo('Third Set Results',
                                                 "Your number of matches are " + str(len(same_match3)) + ": " +
                                                 str(same_match3) + "\nYou have won: R" + str(claim_prize[2]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Client's numbers for the third set are: " + str(third_set) + "\n")
@@ -949,6 +1033,8 @@ class User:
                             messagebox.showinfo('Third Set Results',
                                                 "Your number of matches are " + str(len(same_match3)) + ": " +
                                                 str(same_match3) + "\nYou have won: R" + str(claim_prize[3]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Client's numbers for the third set are: " + str(third_set) + "\n")
@@ -961,6 +1047,8 @@ class User:
                             messagebox.showinfo('Third Set Results',
                                                 "Your number of matches are " + str(len(same_match3)) + ": " +
                                                 str(same_match3) + "\nYou have won: R" + str(claim_prize[4]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Client's numbers for the third set are: " + str(third_set) + "\n")
@@ -973,6 +1061,8 @@ class User:
                             messagebox.showinfo('Third Set Results',
                                                 "Your number of matches are " + str(len(same_match3)) + ": " +
                                                 str(same_match3) + "\nYou have won: R" + str(claim_prize[5]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Client's numbers for the third set are: " + str(third_set) + "\n")
@@ -985,6 +1075,8 @@ class User:
                             messagebox.showinfo('Third Set Results',
                                                 "Your number of matches are " + str(len(same_match3)) + ": " +
                                                 str(same_match3) + "\nYou have won: R" + str(claim_prize[6]))
+                            # play sound
+                            playsound("cash.wav")
                             # information that will be written on a separate text file
                             fh = open("Player_info.txt", "a")
                             fh.write("Client's numbers for the third set are: " + str(third_set) + "\n")
@@ -998,32 +1090,22 @@ class User:
                         self.total_label.config(text=total_prize_amount)
                         # information that will be written on a separate text file
                         fh = open("Player_info.txt", "a")
-                        fh.write("Total earnings in R: " + str(total_prize_amount) + '\n')
+                        fh.write("Total Amount: R" + str(total_prize_amount) + '\n')
                         fh.close()
-                        # separate text file with winners info
-                        text = open("prize_winners_info.txt", "+a")
-                        text.write("\nTotal Amount Won: " + str(total_prize_amount))
-                        text.close()
                     elif len(first_set) == 6 and len(second_set) == 6 and len(third_set) < 6:
                         total_prize_amount = first_winnings + second_winnings
                         self.total_label.config(text=total_prize_amount)
                         # information that will be written on a separate text file
                         fh = open("Player_info.txt", "a")
-                        fh.write("Total earnings in R: " + str(total_prize_amount) + '\n')
+                        fh.write("Total Amount: R" + str(total_prize_amount) + '\n')
                         fh.close()
-                        text = open("prize_winners_info.txt", "+a")
-                        text.write("\nTotal Amount Won: " + str(total_prize_amount))
-                        text.close()
                     elif len(first_set) == 6 and len(second_set) == 6 and len(third_set) == 6:
                         total_prize_amount = first_winnings + second_winnings + third_winnings
                         self.total_label.config(text=total_prize_amount)
                         # information that will be written on a separate text file
                         fh = open("Player_info.txt", "a")
-                        fh.write("Total earnings in R: " + str(total_prize_amount) + '\n')
+                        fh.write("Total Amount: R" + str(total_prize_amount) + '\n')
                         fh.close()
-                        text = open("prize_winners_info.txt", "+a")
-                        text.write("\nTotal Amount Won: " + str(total_prize_amount))
-                        text.close()
 
             # function to claim prize
             def claim_prize(self):
@@ -1109,7 +1191,6 @@ class User:
                 response = requests.get('https://v6.exchangerate-api.com/v6/3b6104d9c62069d198e73219/latest/ZAR')
                 data = response.json()
                 standard_rate = data['conversion_rates']
-
                 class Conversion:
                     def __init__(self, master):
                         self.conversion_frame = Frame(currency_conversion_screen, bg="#bdbdbd", width=630, height=450)
@@ -1161,28 +1242,14 @@ class User:
                         self.exit_btn = Button(master, borderwidth=5, padx=25, pady=10, fg="black", bg="red",
                                                text="Exit", font=("Arial", 17, "bold"), command=self.conversion_exit)
                         self.exit_btn.place(relx=0.755, rely=0.87)
-                        # # making the request
-                        # response = requests.get('https://v6.exchangerate-api.com/v6/3b6104d9c62069d198e73219/latest/ZAR')
-                        # data = response.json()
-                        # standard_rate = data['conversion_rates']
-                        # for i in standard_rate.keys():
-                        #     self.convert_list.insert(END, str(i))
-                        # print(data['conversion_rates'][self.convert_list.get(ACTIVE)])
-                        # self.scrollbar = Scrollbar(master)
-                        # self.scrollbar.pack(side="right", fill="y")
-                        # for i in standard_rate.keys():
-                        #     self.convert_list.insert(END, str(i))
-                        # self.convert_list.pack(side="left", fill="both")
-                        # self.scrollbar.config(command=self.convert_list.yview)
-                        # print(data['conversion_rates'][self.convert_list.get(ACTIVE)])
                         self.total_amount.config(text=total_prize_amount)
 
                     def converting(self):
                         amount = float(total_prize_amount)
                         converted_amount = amount * standard_rate[self.convert_list.get(ACTIVE)]
                         # round conversion off to 2 decimal places
-
                         self.converted_total['text'] = round(converted_amount, 2)
+
 
                     def conversion_clear(self):
                         self.converted_total.config(text="")
@@ -1206,11 +1273,13 @@ class User:
                         canvas.place(relx=0.3, rely=0.02)
                         img_banks = ImageTk.PhotoImage(Image.open("banks2.jpeg"))
                         canvas.create_image(150, 5, anchor=N, image=img_banks)
-                        # self.total = Conversion.converting(self.converted_total)
+                        # Conversion(banking_details_screen).con
+                        # self.total = Conversion.converting(converted_amount.get())
 
 
                         class Banking_details:
                             def __init__(self, master):
+                                # super().__init__(self)
                                 var_material = StringVar()
                                 bank_options = {'ABSA': 632005, 'CAPITEC': 470010, 'FNB': 250655, 'NEDBANK': 198765}
                                 self.banking_details_frame = Frame(banking_details_screen, bg="#bdbdbd", width=630,
@@ -1285,7 +1354,8 @@ class User:
                                                        command=self.banking_exit)
                                 self.exit_btn.place(relx=0.755, rely=0.87)
 
-                                self.total = Conversion.converting(self.converted_total.cget('text'))
+                                # self.converted_total = self.total_amount * self.converted_amount
+                                # self.total = self.converted_total.cget('text')
 
                             def confirmation(self):
                                 def account_number_validation():
@@ -1316,13 +1386,23 @@ class User:
                                                             'Please ensure that your account number only contains digits.')
 
                                 if account_name_validation() == 1 and account_number_validation() == 1:
-                                    # play sound
-                                    # playsound("./sounds/391539__mativve__electro-win-sound.wav")
-                                    player_id = User.player_id(person_age)
+                                    winnings = 0
+                                    email = 0
+                                    playerId = User.player_id(person_age)
+                                    # winnings
+                                    with open("Player_info.txt", 'r') as f:
+                                        for x in f:
+                                            if "Total Amount: R" in x:
+                                                winnings = str(x[14:-1])
+                                    # email
+                                    with open("Player_info.txt", 'r') as f:
+                                        for x in f:
+                                            if "Email:" in x:
+                                                email = str(x[6:-1])
                                     # send email
                                     s = smtplib.SMTP('smtp.gmail.com', 587)
                                     sender_email_id = 'mikaylabeelders@gmail.com'
-                                    receiver_email_id = 'mikayla@trade245.com'
+                                    receiver_email_id = str(email)
                                         # User(login_screen).email_entry
                                     password = 'Ashleemickey123*'
 
@@ -1331,27 +1411,27 @@ class User:
                                     s.login(sender_email_id, password)
 
                                     message = "Subject: Congratulations!!!\n"
-                                    message = message + "Thank you for playing! " + "\nYour winnings are: " + str(self.total) + "\n\nBelow are your details:" + "\nPlayer ID: " + str(player_id) + "\nAccount name: " + str(self.account_name_entry.get()) + "\nAccount number: " + str(self.account_number_entry.get())
+                                    message = message + "Thank you for playing! " + "\nYour winnings are: " + str(winnings) + "\n\nBelow are your details:" + "\nPlayer ID: " + str(playerId) + "\nAccount name: " + str(self.account_name_entry.get()) + "\nAccount number: " + str(self.account_number_entry.get())
 
                                     s.sendmail(sender_email_id, receiver_email_id, message)
                                     # display instruction to player
                                     messagebox.showinfo('Thank you for playing!', 'Please refer to your emails for '
                                                                                   'confirmation of your details submitted.')
+                                    banking_details_screen.destroy()
 
                             def banking_clear(self):
                                 self.account_number_entry.delete(0, END)
                                 self.account_name_entry. delete(0, END)
+                                self.banking_options.set('Please select...')
+                                self.branch_code.config(text='')
 
 
                             def banking_exit(self):
                                 banking_details_screen.destroy()
-
                         banking_details = Banking_details(banking_details_screen)
                         banking_details_screen.mainloop()
-
                 converting = Conversion(currency_conversion_screen)
                 currency_conversion_screen.mainloop()
-
         selecting_numbers = Selection(numberSelection_screen)
         numberSelection_screen.mainloop()
 
