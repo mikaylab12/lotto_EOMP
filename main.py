@@ -3,12 +3,15 @@
 from tkinter import *
 from PIL import Image, ImageTk
 from tkinter import messagebox
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time, date
 import rsaidnumber
 import random
 import requests
 from tkinter import ttk
 from email_validator import validate_email, EmailNotValidError
+import uuid
+import smtplib
+from playsound import playsound
 
 login_screen = Tk()
 login_screen.geometry("800x800")
@@ -28,7 +31,8 @@ class User:
         self.login_frame = Frame(master, bg="#bdbdbd", width=630, height=400)
         self.login_frame.place(relx=0.1, rely=0.27)
         # frame heading
-        self.instruction_heading = Label(master, text="Please enter the following credentials inorder to play:", font=("Arial", 17, "bold"), bg="#bdbdbd")
+        self.instruction_heading = Label(master, text="Please enter the following credentials inorder to play:",
+                                         font=("Arial", 17, "bold"), bg="#bdbdbd")
         self.instruction_heading.place(relx=0.13, rely=0.31)
         # name label and entry
         self.name_label = Label(master, bg="#bdbdbd", fg="#000", text="Name and Surname:", font=("Arial", 15))
@@ -68,29 +72,36 @@ class User:
         exit_btn = Button(login_screen, borderwidth=5, padx=25, pady=10, fg="black", bg="red", text="Exit",
                           font=("Arial", 17, "bold"), command=self.exit)
         exit_btn.place(relx=0.755, rely=0.86)
+        global name_entry
+        global nr_of_games
+        global telephone_number
+
+    def player_id(self):
+        player_id = uuid.uuid4()
+        fh = open("Player_info.txt", "a")
+        fh.write("New Player:\n")
+        fh.write = ("Date: " + str(date.today()) + '\n')
+        fh.write = ("Time: " + str(time) + '\n')
+        fh.write = ("Player Unique ID: " + str(player_id) + "\n")
+        fh.close()
+        return player_id
 
     def validating_inputs(self):
         def age_calc():
             try:
                 # current date
-                date = datetime.today()
+                current_date = datetime.today()
+                # in order to validate id number entered
                 id_number = rsaidnumber.parse(self.id_entry.get())
                 valid_id = id_number
                 while valid_id:
                     dob = id_number.date_of_birth
-                    current_age = int((date - dob) // timedelta(days=365.25))
+                    current_age = int((current_date - dob) // timedelta(days=365.25))
                     if int(current_age) >= 18:
-                        # messagebox.showinfo("Valid Details", "Let's Play!")
-                        # login_screen.destroy()
                         return 1
-                    #     # import screen_2
-                    # elif not found:
-                    #     messagebox.showinfo("Invalid Details", "Invalid ID number. Try again.")
                     else:
                         messagebox.showinfo("Underage", "You are too young to play.\nPlease try again in " + str(
                             18 - int(current_age)) + " years")
-                # else:
-                #     messagebox.showinfo("Invalid Details", "Invalid ID number. Try again.")
             except ValueError:
                 messagebox.showinfo("Invalid ID", "\nPlease enter a valid South African ID number that consists of 13"
                                     " digits.")
@@ -99,186 +110,38 @@ class User:
             try:
                 # validate email
                 valid = validate_email(self.email_entry.get())
-                # email = valid.email
-                # found = True
                 while valid:
                     return 1
-
             except EmailNotValidError:
                 messagebox.showinfo("Invalid Email Address", "\nPlease enter a valid email address.")
 
         def cell_num_validation():
             try:
-                if type(self.telephone_number_entry.get()) == int:
-                    cell_num = (self.telephone_number_entry.get())
-                    if len(cell_num) == 10:
-                        return 1
-                    elif len(cell_num) > 10:
-                        messagebox.showinfo('Error', 'Please ensure that your cellphone number contains only 10 digits.')
-                    elif len(cell_num) < 10:
-                        messagebox.showinfo('Error', 'Please note that you have not entered 10 digits '
-                                                     'for your contact number')
-                else:
-                    messagebox.showinfo('Error', 'OLO')
+                tel = (self.telephone_number_entry.get())
+                if int(len(tel)) == 10:
+                    return 1
+                elif int(len(tel)) > 10:
+                    messagebox.showinfo('Error', 'Please ensure that your cellphone number contains only 10 digits.')
+                elif int(len(tel)) < 10:
+                    messagebox.showinfo('Error', 'Please note that you have not entered 10 digits '
+                                        'for your contact number')
             except ValueError:
                 messagebox.showinfo('Error', 'Please enter a valid cellphone number that only consists of digits. ')
 
         if age_calc() == 1 and email_validation() == 1 and cell_num_validation() == 1:
-            fh = open("Entries.txt", "a")
+            fh = open("Player_info.txt", "a")
             fh.write("Name and Surname: " + self.name_entry.get() + '\n')
-            fh.write("ID Number: " + self.id_entry.get()+ '\n')
-            fh.write("Email Address: " + self.email_entry.get()+ '\n')
-            fh.write("Contact Number: " + self.telephone_number_entry.get()+ '\n')
+            fh.write("ID Number: " + self.id_entry.get() + '\n')
+            fh.write("Email Address: " + self.email_entry.get() + '\n')
+            fh.write("Contact Number: " + self.telephone_number_entry.get() + '\n')
+            fh.write("Player ID: " + str(self.player_id) + '\n')
             fh.write("Residential Address: " + self.residential_address_entry.get() + "\n")
-            fh.write('\n')
             fh.close()
             messagebox.showinfo("Valid Details", "Let's Play!")
             login_screen.destroy()
             self.screen_2()
 
-            # def age_calc(self):
-            #     try:
-            #         fh = open("Entries.txt", "a")
-            #         fh.write(self.name_entry.get())
-            #         fh.write('\n')
-            #         fh.write(self.id_entry.get())
-            #         fh.write('\n')
-            #         fh.write(self.email_entry.get())
-            #         fh.write('\n')
-            #         fh.write(self.telephone_number_entry.get())
-            #         fh.write('\n')
-            #         fh.write(self.residential_address_entry.get())
-            #         fh.write('\n')
-            #         try:
-            #             # current date
-            #             date = datetime.today()
-            #             # validate email
-            #             valid = validate_email(self.email_entry.get())
-            #             # email = valid.email
-            #             id_number = rsaidnumber.parse(self.id_entry.get())
-            #             found = True
-            #             if found:
-            #                 dob = id_number.date_of_birth
-            #                 current_age = int((date - dob) // timedelta(days=365.25))
-            #                 if int(current_age) >= 18:
-            #                     messagebox.showinfo("Valid Details", "Let's Play!")
-            #                     login_screen.withdraw()
-            #                 else:
-            #                     messagebox.showinfo("Underage",
-            #                                         "You are too young to play.\nPlease try again in " + str(
-            #                                             18 - int(current_age)) + " years")
-            #             else:
-            #                 messagebox.showinfo("Invalid Details", "Invalid ID number. Try again.")
-            #         except EmailNotValidError:
-            #             messagebox.showinfo("Invalid Email Address", "\nPlease enter a valid email address.")
-            #     except ValueError:
-            #         messagebox.showinfo("Invalid ID",
-            #                             "\nPlease enter a valid South African ID number that consists of 13 digits.")
 
-    # def age_calc(self):
-    #     try:
-    #         date = datetime.today()
-    #         email = validate_email(self.email_entry.get())
-    #         id_number = rsaidnumber.parse(self.id_entry.get())
-    #         found = True
-    #         dob = id_number.date_of_birth
-    #         current_age = int((date - dob) // timedelta(days=365.25))
-    #         if len(self.id_entry.get()) != 13:
-    #             messagebox.showerror("Inv", "Please enter 13 digits")
-    #         elif self.id_entry.get() == str(self.id_entry.get()) :
-    #             messagebox.showinfo("Invalid Details", "Invalid ID number, enter digits. Try again.")
-    #         elif found == False:
-    #             messagebox.showinfo("Invalid ID", "\nPlease enter your valid South African ID number")
-    #         # elif int(current_age) >= 18:
-    #         #     messagebox.showinfo("Valid Details", "Let's Play!")
-    #         #             # import screen_2
-    #     except int(current_age) >= 18:
-    #             messagebox.showinfo("Valid Details", "Let's Play!")
-    #                     # import screen_2
-    #     else:
-    #         messagebox.showinfo("Underage", "You are too young to play.\nPlease try again in " + str(
-    #                         18 - int(current_age)) + " years")
-    #     # except ValueError:
-    #     #     messagebox.showinfo("Invalid ID", "\nPlease enter 13 digits")
-
-    # def age_calc(self):
-    #     try:
-    #         fh = open("Entries.txt", "w")
-    #         fh.write(self.name_entry.get())
-    #         fh.write('\n')
-    #         fh.write(self.id_entry.get())
-    #         fh.write('\n')
-    #         fh.write(self.email_entry.get())
-    #         fh.write('\n')
-    #         fh.write(self.telephone_number_entry.get())
-    #         fh.write('\n')
-    #         fh.write(self.residential_address_entry.get())
-    #         fh.write('\n')
-    #         # current date
-    #         date = datetime.today()
-    #         # validate email
-    #         valid = validate_email(self.email_entry.get())
-    #         # email = valid.email
-    #         id_number = rsaidnumber.parse(self.id_entry.get())
-    #         found = True
-    #     except EmailNotValidError:
-    #         messagebox.showinfo("Invalid Email Address", "\nPlease enter a valid email address.")
-    #     except ValueError:
-    #         messagebox.showinfo("Invalid ID", "\nPlease enter a valid South African ID number that consists of 13 digits.")
-    #     finally:
-    #             if found and self.id_entry.get() == 13:
-    #                 dob = id_number.date_of_birth
-    #                 current_age = int((date - dob) // timedelta(days=365.25))
-    #                 if int(current_age) >= 18:
-    #                     messagebox.showinfo("Valid Details", "Let's Play!")
-    #                     login_screen.withdraw()
-    #                     # import screen_2
-    #                 else:
-    #                     messagebox.showinfo("Underage", "You are too young to play.\nPlease try again in " + str(
-    #                         18 - int(current_age)) + " years")
-    #             else:
-    #                 messagebox.showinfo("Invalid Details", "Invalid ID number. Try again.")
-
-    # def age_calc(self):
-    #     try:
-    #         fh = open("Entries.txt", "w")
-    #         fh.write(self.name_entry.get())
-    #         fh.write('\n')
-    #         fh.write(self.id_entry.get())
-    #         fh.write('\n')
-    #         fh.write(self.email_entry.get())
-    #         fh.write('\n')
-    #         fh.write(self.telephone_number_entry.get())
-    #         fh.write('\n')
-    #         fh.write(self.residential_address_entry.get())
-    #         fh.write('\n')
-    #         try:
-    #             # current date
-    #             date = datetime.today()
-    #             # validate email
-    #             valid = validate_email(self.email_entry.get())
-    #             # email = valid.email
-    #             id_number = rsaidnumber.parse(self.id_entry.get())
-    #             found = True
-    #             try:
-    #                  while found:
-    #                     dob = id_number.date_of_birth
-    #                     current_age = int((date - dob) // timedelta(days=365.25))
-    #                     if int(current_age) >= 18:
-    #                         messagebox.showinfo("Valid Details", "Let's Play!")
-    #                         login_screen.withdraw()
-    #                         # import screen_2
-    #                     else:
-    #                         messagebox.showinfo("Underage", "You are too young to play.\nPlease try again in " + str(
-    #                             18 - int(current_age)) + " years")
-    #             except ValueError:
-    #                 messagebox.showinfo("Invalid Details", "Invalid ID number. Try again.")
-    #         except EmailNotValidError:
-    #             messagebox.showinfo("Invalid Email Address", "\nPlease enter a valid email address.")
-    #     except ValueError:
-    #         messagebox.showinfo("Invalid ID", "\nPlease enter a valid South African ID number that consists of 13 digits.")
-    #
-    #
     def clear(self):
         self.id_entry.delete(0, END)
         self.name_entry.delete(0, END)
@@ -287,14 +150,11 @@ class User:
         self.residential_address_entry.delete(0, END)
 
     def exit(self):
-        pass
-        # exitMsgBox = messagebox.askyesno('Exit', 'Are you sure you would like to exit?', icon='warning')
-        # if exitMsgBox == 'yes':
-        #     login_screen.destroy()
-        # else:
-        #     messagebox.showinfo('Return', 'You will now return to the application screen')
+        login_screen.destroy()
 
+    # lotto screen
     def screen_2(self):
+        # second window/screen
         numberSelection_screen = Tk()
         numberSelection_screen.geometry("800x800")
         numberSelection_screen.title("Select Your Numbers")
@@ -320,13 +180,13 @@ class User:
                 self.instruction_heading.place(relx=0.13, rely=0.28)
                 # number buttons
                 self.btn_1 = Button(master, text="1", padx=15, bg="#ffde24", font=("Arial", 11, "bold"), command=lambda:
-                self.display_btn(1))
+                                    self.display_btn(1))
                 self.btn_1.place(relx=0.15, rely=0.34)
                 self.btn_2 = Button(master, text="2", padx=15, bg="#ffde24", font=("Arial", 11, "bold"), command=lambda:
-                self.display_btn(2))
+                                    self.display_btn(2))
                 self.btn_2.place(relx=0.2135, rely=0.34)
                 self.btn_3 = Button(master, text="3", padx=15, bg="#ffde24", font=("Arial", 11, "bold"), command=lambda:
-                self.display_btn(3))
+                                    self.display_btn(3))
                 self.btn_3.place(relx=0.277, rely=0.34)
                 self.btn_4 = Button(master, text="4", padx=15, bg="#ffde24", font=("Arial", 11, "bold"), command=lambda:
                 self.display_btn(4))
@@ -542,6 +402,7 @@ class User:
                 global second_winnings
                 global third_winnings
                 global total_prize_amount
+                self.nr_of_games = 0
                 # function to see if any lotto numbers selected matches those numbers that were generated
                 # only if FIRST set selected
                 try:
@@ -549,285 +410,306 @@ class User:
                         # gets the value visible in the set and the generated numbers
                         same_match = set(first_set).intersection(set(lotto_numbers))
                         claim_prize = prizes
+                        self.nr_of_games = 1
                         # function to determine the prize amount
                         if len(same_match) == 0:
                             first_winnings = float(claim_prize[0])
                             messagebox.showinfo('First Set Results', "Your correct matches are: " + "0" +
                                                 "\nYou have won: R" + str(claim_prize[0]))
+                            # play sound
+                            playsound("ES_CashRegister5-SFXProducer.mp3")
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
-                            text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
-                            text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
-                            text.write("The correct matches for the first set are: 0" + '\n')
-                            text.write("The amount for the first set: " + str(claim_prize[0]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
+                            fh.write('The winning numbers are: ' + str(lotto_numbers) + "\n")
+                            fh.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                            fh.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                            fh.write("The correct matches for the first set are: 0" + '\n')
+                            fh.write("The amount for the first set: " + str(claim_prize[0]) + "\n")
+                            fh.close()
                         elif len(same_match) == 1:
                             first_winnings = float(claim_prize[1])
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[1]))
+                            # play sound
+                            playsound("ES_CashRegister5-SFXProducer.mp3")
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
-                            text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
-                            text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
-                            text.write("The correct matches for the first set are: " + str(same_match) + '\n')
-                            text.write("The amount for the first set: " + str(claim_prize[1]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
+                            fh.write('The winning numbers are: ' + str(lotto_numbers) + "\n")
+                            fh.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                            fh.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                            fh.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                            fh.write("The amount for the first set: " + str(claim_prize[1]) + "\n")
+                            fh.close()
                         elif len(same_match) == 2:
                             first_winnings = float(claim_prize[2])
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[2]))
+                            # play sound
+                            playsound("ES_TrumpetSad-SFX Producer.mp3")
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
-                            text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
-                            text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
-                            text.write("The correct matches for the first set are: " + str(same_match) + '\n')
-                            text.write("The amount for the first set: " + str(claim_prize[2]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
+                            fh.write('The winning numbers are: ' + str(lotto_numbers) + "\n")
+                            fh.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                            fh.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                            fh.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                            fh.write("The amount for the first set: " + str(claim_prize[2]) + "\n")
+                            fh.close()
                         elif len(same_match) == 3:
                             first_winnings = float(claim_prize[3])
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[3]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
-                            text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
-                            text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
-                            text.write("The correct matches for the first set are: " + str(same_match) + '\n')
-                            text.write("The amount for the first set: " + str(claim_prize[3]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
+                            fh.write('The winning numbers are: ' + str(lotto_numbers) + "\n")
+                            fh.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                            fh.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                            fh.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                            fh.write("The amount for the first set: " + str(claim_prize[3]) + "\n")
+                            fh.close()
                         elif len(same_match) == 4:
                             first_winnings = float(claim_prize[4])
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[4]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
-                            text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
-                            text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
-                            text.write("The correct matches for the first set are: " + str(same_match) + '\n')
-                            text.write("The amount for the first set: " + str(claim_prize[4]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
+                            fh.write('The winning numbers are: ' + str(lotto_numbers) + "\n")
+                            fh.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                            fh.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                            fh.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                            fh.write("The amount for the first set: " + str(claim_prize[4]) + "\n")
+                            fh.close()
                         elif len(same_match) == 5:
                             first_winnings = float(claim_prize[5])
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[5]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
-                            text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
-                            text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
-                            text.write("The correct matches for the first set are: " + str(same_match) + '\n')
-                            text.write("The amount for the first set: " + str(claim_prize[5]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
+                            fh.write('The winning numbers are: ' + str(lotto_numbers) + "\n")
+                            fh.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                            fh.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                            fh.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                            fh.write("The amount for the first set: " + str(claim_prize[5]) + "\n")
+                            fh.close()
                         else:
                             first_winnings = float(claim_prize[6])
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[6]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
-                            text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
-                            text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
-                            text.write("The correct matches for the first set are: " + str(same_match) + '\n')
-                            text.write("The amount for the first set: " + str(claim_prize[6]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
+                            fh.write('The winning numbers are: ' + str(lotto_numbers) + "\n")
+                            fh.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                            fh.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                            fh.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                            fh.write("The amount for the first set: " + str(claim_prize[6]) + "\n")
+                            fh.close()
                     # only if FIRST and SECOND set selected
                     elif len(first_set) == 6 and len(second_set) == 6 and len(third_set) < 6:
                         # gets the value visible in the sets and the generated numbers
                         same_match = set(first_set).intersection(set(lotto_numbers))
                         same_match2 = set(second_set).intersection(set(lotto_numbers))
                         claim_prize = prizes
+                        self.nr_of_games = 2
                         # function to determine the prize amount for the FIRST set
                         if len(same_match) == 0:
                             first_winnings = float(claim_prize[0])
                             messagebox.showinfo('First Set Results', "Your correct matches are: " + "0" +
                                                 "\nYou have won: R" + str(claim_prize[0]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
-                            text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
-                            text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
-                            text.write("The correct matches for the first set are: 0\n")
-                            text.write("The amount for the first set: " + str(claim_prize[0]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
+                            fh.write('The winning numbers are: ' + str(lotto_numbers) + "\n")
+                            fh.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                            fh.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                            fh.write("The correct matches for the first set are: 0\n")
+                            fh.write("The amount for the first set: " + str(claim_prize[0]) + "\n")
+                            fh.close()
                         elif len(same_match) == 1:
                             first_winnings = float(claim_prize[1])
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[1]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
-                            text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
-                            text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
-                            text.write("The correct matches for the first set are: " + str(same_match) + '\n')
-                            text.write("The amount for the first set: " + str(claim_prize[1]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
+                            fh.write('The winning numbers are: ' + str(lotto_numbers) + "\n")
+                            fh.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                            fh.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                            fh.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                            fh.write("The amount for the first set: " + str(claim_prize[1]) + "\n")
+                            fh.close()
                         elif len(same_match) == 2:
                             first_winnings = float(claim_prize[2])
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[2]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
-                            text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
-                            text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
-                            text.write("The correct matches for the first set are: " + str(same_match) + '\n')
-                            text.write("The amount for the first set: " + str(claim_prize[2]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
+                            fh.write('The winning numbers are: ' + str(lotto_numbers) + "\n")
+                            fh.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                            fh.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                            fh.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                            fh.write("The amount for the first set: " + str(claim_prize[2]) + "\n")
+                            fh.close()
                         elif len(same_match) == 3:
                             first_winnings = float(claim_prize[3])
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[3]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
-                            text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
-                            text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
-                            text.write("The correct matches for the first set are: " + str(same_match) + '\n')
-                            text.write("The amount for the first set: " + str(claim_prize[3]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
+                            fh.write('The winning numbers are: ' + str(lotto_numbers) + "\n")
+                            fh.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                            fh.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                            fh.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                            fh.write("The amount for the first set: " + str(claim_prize[3]) + "\n")
+                            fh.close()
                         elif len(same_match) == 4:
                             first_winnings = float(claim_prize[4])
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[4]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
-                            text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
-                            text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
-                            text.write("The correct matches for the first set are: " + str(same_match) + '\n')
-                            text.write("The amount for the first set: " + str(claim_prize[4]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
+                            fh.write('The winning numbers are: ' + str(lotto_numbers) + "\n")
+                            fh.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                            fh.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                            fh.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                            fh.write("The amount for the first set: " + str(claim_prize[4]) + "\n")
+                            fh.close()
                         elif len(same_match) == 5:
                             first_winnings = float(claim_prize[5])
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[5]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
-                            text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
-                            text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
-                            text.write("The correct matches for the first set are: " + str(same_match) + '\n')
-                            text.write("The amount for the first set: " + str(claim_prize[5]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
+                            fh.write('The winning numbers are: ' + str(lotto_numbers) + "\n")
+                            fh.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                            fh.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                            fh.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                            fh.write("The amount for the first set: " + str(claim_prize[5]) + "\n")
+                            fh.close()
                         elif len(same_match) == 6:
                             first_winnings = float(claim_prize[6])
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[6]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
-                            text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
-                            text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
-                            text.write("The correct matches for the first set are: " + str(same_match) + '\n')
-                            text.write("The amount for the first set: " + str(claim_prize[6]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
+                            fh.write('The winning numbers are: ' + str(lotto_numbers) + "\n")
+                            fh.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                            fh.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                            fh.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                            fh.write("The amount for the first set: " + str(claim_prize[6]) + "\n")
+                            fh.close()
                         # function to determine the prize amount for the SECOND set
                         if len(same_match2) == 0:
                             second_winnings = float(claim_prize[0])
                             messagebox.showinfo('Second Set Results', "Your correct matches are: " + "0" +
                                                 "\nYou have won: R" + str(claim_prize[0]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
-                            text.write(
-                                "The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
-                            text.write("The correct matches for the second set are: 0\n")
-                            text.write("The amount for the second set: " + str(claim_prize[0]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                            fh.write("The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
+                            fh.write("The correct matches for the second set are: 0\n")
+                            fh.write("The amount for the second set: " + str(claim_prize[0]) + "\n")
+                            fh.close()
                         elif len(same_match2) == 1:
                             second_winnings = float(claim_prize[1])
                             messagebox.showinfo('Second Set Results',
                                                 "Your number of matches are " + str(len(same_match2)) + ": " +
                                                 str(same_match2) + "\nYou have won: R" + str(claim_prize[1]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
-                            text.write(
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                            fh.write(
                                 "The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
-                            text.write("The correct matches for the second set are: " + str(same_match2) + '\n')
-                            text.write("The amount for the second set: " + str(claim_prize[1]) + "\n")
-                            text.close()
+                            fh.write("The correct matches for the second set are: " + str(same_match2) + '\n')
+                            fh.write("The amount for the second set: " + str(claim_prize[1]) + "\n")
+                            fh.close()
                         elif len(same_match2) == 2:
                             second_winnings = float(claim_prize[2])
                             messagebox.showinfo('Second Set Results',
                                                 "Your number of matches are " + str(len(same_match2)) + ": " +
                                                 str(same_match2) + "\nYou have won: R" + str(claim_prize[2]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
-                            text.write(
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                            fh.write(
                                 "The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
-                            text.write("The correct matches for the second set are: " + str(same_match2) + '\n')
-                            text.write("The amount for the second set: " + str(claim_prize[2]) + "\n")
-                            text.close()
+                            fh.write("The correct matches for the second set are: " + str(same_match2) + '\n')
+                            fh.write("The amount for the second set: " + str(claim_prize[2]) + "\n")
+                            fh.close()
                         elif len(same_match2) == 3:
                             second_winnings = float(claim_prize[3])
                             messagebox.showinfo('Second Set Results',
                                                 "Your number of matches are " + str(len(same_match2)) + ": " +
                                                 str(same_match2) + "\nYou have won: R" + str(claim_prize[3]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
-                            text.write(
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                            fh.write(
                                 "The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
-                            text.write("The correct matches for the second set are: " + str(same_match2) + '\n')
-                            text.write("The amount for the second set: " + str(claim_prize[3]) + "\n")
-                            text.close()
+                            fh.write("The correct matches for the second set are: " + str(same_match2) + '\n')
+                            fh.write("The amount for the second set: " + str(claim_prize[3]) + "\n")
+                            fh.close()
                         elif len(same_match2) == 4:
                             second_winnings = float(claim_prize[4])
                             messagebox.showinfo('Second Set Results',
                                                 "Your number of matches are " + str(len(same_match2)) + ": " +
                                                 str(same_match2) + "\nYou have won: R" + str(claim_prize[4]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
-                            text.write(
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                            fh.write(
                                 "The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
-                            text.write("The correct matches for the second set are: " + str(same_match2) + '\n')
-                            text.write("The amount for the second set: " + str(claim_prize[4]) + "\n")
-                            text.close()
+                            fh.write("The correct matches for the second set are: " + str(same_match2) + '\n')
+                            fh.write("The amount for the second set: " + str(claim_prize[4]) + "\n")
+                            fh.close()
                         elif len(same_match2) == 5:
                             second_winnings = float(claim_prize[5])
                             messagebox.showinfo('Second Set Results',
                                                 "Your number of matches are " + str(len(same_match2)) + ": " +
                                                 str(same_match2) + "\nYou have won: R" + str(claim_prize[5]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
-                            text.write(
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                            fh.write(
                                 "The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
-                            text.write("The correct matches for the second set are: " + str(same_match2) + '\n')
-                            text.write("The amount for the second set: " + str(claim_prize[5]) + "\n")
-                            text.close()
+                            fh.write("The correct matches for the second set are: " + str(same_match2) + '\n')
+                            fh.write("The amount for the second set: " + str(claim_prize[5]) + "\n")
+                            fh.close()
                         else:
                             second_winnings = float(claim_prize[6])
                             messagebox.showinfo('Second Set Results',
                                                 "Your number of matches are " + str(len(same_match2)) + ": " +
                                                 str(same_match2) + "\nYou have won: R" + str(claim_prize[6]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
-                            text.write(
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                            fh.write(
                                 "The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
-                            text.write("The correct matches for the second set are: " + str(same_match2) + '\n')
-                            text.write("The amount for the second set: " + str(claim_prize[6]) + "\n")
-                            text.close()
+                            fh.write("The correct matches for the second set are: " + str(same_match2) + '\n')
+                            fh.write("The amount for the second set: " + str(claim_prize[6]) + "\n")
+                            fh.close()
 
                     # only if FIRST, SECOND and THIRD set selected
                     elif len(first_set) == 6 and len(second_set) == 6 and len(third_set) == 6:
@@ -836,293 +718,311 @@ class User:
                         same_match2 = set(second_set).intersection(set(lotto_numbers))
                         same_match3 = set(third_set).intersection(set(lotto_numbers))
                         claim_prize = prizes
+                        self.nr_of_games = 3
                         # function to determine prize amount for FIRST set
                         if len(same_match) == 0:
                             first_winnings = float(claim_prize[0])
                             messagebox.showinfo('First Set Results', "Your correct matches are: " + "0" +
                                                 "\nYou have won: R" + str(claim_prize[0]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
-                            text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
-                            text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
-                            text.write("The correct matches for the first set are: 0\n")
-                            text.write("The amount for the first set: " + str(claim_prize[0]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
+                            fh.write('The winning numbers are: ' + str(lotto_numbers) + "\n")
+                            fh.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                            fh.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                            fh.write("The correct matches for the first set are: 0\n")
+                            fh.write("The amount for the first set: " + str(claim_prize[0]) + "\n")
+                            fh.close()
                         elif len(same_match) == 1:
                             first_winnings = float(claim_prize[1])
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[1]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
-                            text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
-                            text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
-                            text.write("The correct matches for the first set are: " + str(same_match) + '\n')
-                            text.write("The amount for the first set: " + str(claim_prize[1]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
+                            fh.write('The winning numbers are: ' + str(lotto_numbers) + "\n")
+                            fh.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                            fh.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                            fh.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                            fh.write("The amount for the first set: " + str(claim_prize[1]) + "\n")
+                            fh.close()
                         elif len(same_match) == 2:
                             first_winnings = float(claim_prize[2])
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[2]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
-                            text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
-                            text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
-                            text.write("The correct matches for the first set are: " + str(same_match) + '\n')
-                            text.write("The amount for the first set: " + str(claim_prize[2]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
+                            fh.write('The winning numbers are: ' + str(lotto_numbers) + "\n")
+                            fh.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                            fh.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                            fh.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                            fh.write("The amount for the first set: " + str(claim_prize[2]) + "\n")
+                            fh.close()
                         elif len(same_match) == 3:
                             first_winnings = float(claim_prize[3])
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[3]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
-                            text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
-                            text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
-                            text.write("The correct matches for the first set are: " + str(same_match) + '\n')
-                            text.write("The amount for the first set: " + str(claim_prize[3]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
+                            fh.write('The winning numbers are: ' + str(lotto_numbers) + "\n")
+                            fh.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                            fh.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                            fh.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                            fh.write("The amount for the first set: " + str(claim_prize[3]) + "\n")
+                            fh.close()
                         elif len(same_match) == 4:
                             first_winnings = float(claim_prize[4])
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[4]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
-                            text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
-                            text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
-                            text.write("The correct matches for the first set are: " + str(same_match) + '\n')
-                            text.write("The amount for the first set: " + str(claim_prize[4]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
+                            fh.write('The winning numbers are: ' + str(lotto_numbers) + "\n")
+                            fh.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                            fh.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                            fh.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                            fh.write("The amount for the first set: " + str(claim_prize[4]) + "\n")
+                            fh.close()
                         elif len(same_match) == 5:
                             first_winnings = float(claim_prize[5])
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[5]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
-                            text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
-                            text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
-                            text.write("The correct matches for the first set are: " + str(same_match) + '\n')
-                            text.write("The amount for the first set: " + str(claim_prize[5]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
+                            fh.write('The winning numbers are: ' + str(lotto_numbers) + "\n")
+                            fh.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                            fh.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                            fh.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                            fh.write("The amount for the first set: " + str(claim_prize[5]) + "\n")
+                            fh.close()
                         elif len(same_match) == 6:
                             first_winnings = float(claim_prize[6])
                             messagebox.showinfo('First Set Results',
                                                 "Your number of matches are " + str(len(same_match)) + ": " +
                                                 str(same_match) + "\nYou have won: R" + str(claim_prize[6]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write('\nThe winning numbers are: ' + str(lotto_numbers) + "\n")
-                            text.write("Client's numbers for the first set are: " + str(first_set) + "\n")
-                            text.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
-                            text.write("The correct matches for the first set are: " + str(same_match) + '\n')
-                            text.write("The amount for the first set: " + str(claim_prize[6]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Sets Played: " + str(self.nr_of_games) + "\n")
+                            fh.write('The winning numbers are: ' + str(lotto_numbers) + "\n")
+                            fh.write("Client's numbers for the first set are: " + str(first_set) + "\n")
+                            fh.write("The number of correct matches in the first set is: " + str(len(same_match)) + '\n')
+                            fh.write("The correct matches for the first set are: " + str(same_match) + '\n')
+                            fh.write("The amount for the first set: " + str(claim_prize[6]) + "\n")
+                            fh.close()
                         # function to determine prize amount for SECOND set
                         if len(same_match2) == 0:
                             second_winnings = float(claim_prize[0])
                             messagebox.showinfo('Second Set Results', "Your correct matches are: " + "0" +
                                                 "\nYou have won: R" + str(claim_prize[0]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
-                            text.write(
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                            fh.write(
                                 "The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
-                            text.write("The correct matches for the second set are: 0\n")
-                            text.write("The amount for the second set: " + str(claim_prize[0]) + "\n")
-                            text.close()
+                            fh.write("The correct matches for the second set are: 0\n")
+                            fh.write("The amount for the second set: " + str(claim_prize[0]) + "\n")
+                            fh.close()
                         elif len(same_match2) == 1:
                             second_winnings = float(claim_prize[1])
                             messagebox.showinfo('Second Set Results',
                                                 "Your number of matches are " + str(len(same_match2)) + ": " +
                                                 str(same_match2) + "\nYou have won: R" + str(claim_prize[1]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
-                            text.write(
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                            fh.write(
                                 "The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
-                            text.write("The correct matches for the second set are: " + str(same_match2) + '\n')
-                            text.write("The amount for the second set: " + str(claim_prize[1]) + "\n")
-                            text.close()
+                            fh.write("The correct matches for the second set are: " + str(same_match2) + '\n')
+                            fh.write("The amount for the second set: " + str(claim_prize[1]) + "\n")
+                            fh.close()
                         elif len(same_match2) == 2:
                             second_winnings = float(claim_prize[2])
                             messagebox.showinfo('Second Set Results',
                                                 "Your number of matches are " + str(len(same_match2)) + ": " +
                                                 str(same_match2) + "\nYou have won: R" + str(claim_prize[2]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
-                            text.write(
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                            fh.write(
                                 "The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
-                            text.write("The correct matches for the second set are: " + str(same_match2) + '\n')
-                            text.write("The amount for the second set: " + str(claim_prize[2]) + "\n")
-                            text.close()
+                            fh.write("The correct matches for the second set are: " + str(same_match2) + '\n')
+                            fh.write("The amount for the second set: " + str(claim_prize[2]) + "\n")
+                            fh.close()
                         elif len(same_match2) == 3:
                             second_winnings = float(claim_prize[3])
                             messagebox.showinfo('Second Set Results',
                                                 "Your number of matches are " + str(len(same_match2)) + ": " +
                                                 str(same_match2) + "\nYou have won: R" + str(claim_prize[3]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
-                            text.write(
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                            fh.write(
                                 "The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
-                            text.write("The correct matches for the second set are: " + str(same_match2) + '\n')
-                            text.write("The amount for the second set: " + str(claim_prize[3]) + "\n")
-                            text.close()
+                            fh.write("The correct matches for the second set are: " + str(same_match2) + '\n')
+                            fh.write("The amount for the second set: " + str(claim_prize[3]) + "\n")
+                            fh.close()
                         elif len(same_match2) == 4:
                             second_winnings = float(claim_prize[4])
                             messagebox.showinfo('Second Set Results',
                                                 "Your number of matches are " + str(len(same_match2)) + ": " +
                                                 str(same_match2) + "\nYou have won: R" + str(claim_prize[4]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
-                            text.write(
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                            fh.write(
                                 "The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
-                            text.write("The correct matches for the second set are: " + str(same_match2) + '\n')
-                            text.write("The amount for the second set: " + str(claim_prize[4]) + "\n")
-                            text.close()
+                            fh.write("The correct matches for the second set are: " + str(same_match2) + '\n')
+                            fh.write("The amount for the second set: " + str(claim_prize[4]) + "\n")
+                            fh.close()
                         elif len(same_match2) == 5:
                             second_winnings = float(claim_prize[5])
                             messagebox.showinfo('Second Set Results',
                                                 "Your number of matches are " + str(len(same_match2)) + ": " +
                                                 str(same_match2) + "\nYou have won: R" + str(claim_prize[5]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
-                            text.write(
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                            fh.write(
                                 "The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
-                            text.write("The correct matches for the second set are: " + str(same_match2) + '\n')
-                            text.write("The amount for the second set: " + str(claim_prize[5]) + "\n")
-                            text.close()
+                            fh.write("The correct matches for the second set are: " + str(same_match2) + '\n')
+                            fh.write("The amount for the second set: " + str(claim_prize[5]) + "\n")
+                            fh.close()
                         elif len(same_match2) == 6:
                             second_winnings = float(claim_prize[6])
                             messagebox.showinfo('Second Set Results',
                                                 "Your number of matches are " + str(len(same_match2)) + ": " +
                                                 str(same_match2) + "\nYou have won: R" + str(claim_prize[6]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write("Client's numbers for the second set are: " + str(second_set) + "\n")
-                            text.write(
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Client's numbers for the second set are: " + str(second_set) + "\n")
+                            fh.write(
                                 "The number of correct matches in the second set is: " + str(len(same_match2)) + '\n')
-                            text.write("The correct matches for the second set are: " + str(same_match2) + '\n')
-                            text.write("The amount for the second set: " + str(claim_prize[6]) + "\n")
-                            text.close()
+                            fh.write("The correct matches for the second set are: " + str(same_match2) + '\n')
+                            fh.write("The amount for the second set: " + str(claim_prize[6]) + "\n")
+                            fh.close()
                         # function to determine prize amount for THIRD set
                         if len(same_match3) == 0:
                             third_winnings = float(claim_prize[0])
                             messagebox.showinfo('Third Set Results', "Your correct matches are: " + "0" +
                                                 "\nYou have won: R" + str(claim_prize[0]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write("Client's numbers for the third set are: " + str(third_set) + "\n")
-                            text.write("The number of correct matches in the third set is: " + str(len(same_match3)) + '\n')
-                            text.write("The correct matches for the third set are: 0\n")
-                            text.write("The amount for the third set: " + str(claim_prize[0]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Client's numbers for the third set are: " + str(third_set) + "\n")
+                            fh.write("The number of correct matches in the third set is: " + str(len(same_match3)) + '\n')
+                            fh.write("The correct matches for the third set are: 0\n")
+                            fh.write("The amount for the third set: " + str(claim_prize[0]) + "\n")
+                            fh.close()
                         elif len(same_match3) == 1:
                             third_winnings = float(claim_prize[1])
                             messagebox.showinfo('Third Set Results',
                                                 "Your number of matches are " + str(len(same_match3)) + ": " +
                                                 str(same_match3) + "\nYou have won: R" + str(claim_prize[1]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write("Client's numbers for the third set are: " + str(third_set) + "\n")
-                            text.write("The number of correct matches in the third set is: " + str(len(same_match3)) + '\n')
-                            text.write("The correct matches for the third set are: " + str(same_match3) + '\n')
-                            text.write("The amount for the third set: " + str(claim_prize[1]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Client's numbers for the third set are: " + str(third_set) + "\n")
+                            fh.write("The number of correct matches in the third set is: " + str(len(same_match3)) + '\n')
+                            fh.write("The correct matches for the third set are: " + str(same_match3) + '\n')
+                            fh.write("The amount for the third set: " + str(claim_prize[1]) + "\n")
+                            fh.close()
                         elif len(same_match3) == 2:
                             third_winnings = float(claim_prize[2])
                             messagebox.showinfo('Third Set Results',
                                                 "Your number of matches are " + str(len(same_match3)) + ": " +
                                                 str(same_match3) + "\nYou have won: R" + str(claim_prize[2]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write("Client's numbers for the third set are: " + str(third_set) + "\n")
-                            text.write("The number of correct matches in the third set is: " + str(len(same_match3)) + '\n')
-                            text.write("The correct matches for the third set are: " + str(same_match3) + '\n')
-                            text.write("The amount for the third set: " + str(claim_prize[2]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Client's numbers for the third set are: " + str(third_set) + "\n")
+                            fh.write("The number of correct matches in the third set is: " + str(len(same_match3)) + '\n')
+                            fh.write("The correct matches for the third set are: " + str(same_match3) + '\n')
+                            fh.write("The amount for the third set: " + str(claim_prize[2]) + "\n")
+                            fh.close()
                         elif len(same_match3) == 3:
                             third_winnings = float(claim_prize[3])
                             messagebox.showinfo('Third Set Results',
                                                 "Your number of matches are " + str(len(same_match3)) + ": " +
                                                 str(same_match3) + "\nYou have won: R" + str(claim_prize[3]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write("Client's numbers for the third set are: " + str(third_set) + "\n")
-                            text.write("The number of correct matches in the third set is: " + str(len(same_match3)) + '\n')
-                            text.write("The correct matches for the third set are: " + str(same_match3) + '\n')
-                            text.write("The amount for the third set: " + str(claim_prize[3]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Client's numbers for the third set are: " + str(third_set) + "\n")
+                            fh.write("The number of correct matches in the third set is: " + str(len(same_match3)) + '\n')
+                            fh.write("The correct matches for the third set are: " + str(same_match3) + '\n')
+                            fh.write("The amount for the third set: " + str(claim_prize[3]) + "\n")
+                            fh.close()
                         elif len(same_match3) == 4:
                             third_winnings = float(claim_prize[4])
                             messagebox.showinfo('Third Set Results',
                                                 "Your number of matches are " + str(len(same_match3)) + ": " +
                                                 str(same_match3) + "\nYou have won: R" + str(claim_prize[4]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write("Client's numbers for the third set are: " + str(third_set) + "\n")
-                            text.write("The number of correct matches in the third set is: " + str(len(same_match3)) + '\n')
-                            text.write("The correct matches for the third set are: " + str(same_match3) + '\n')
-                            text.write("The amount for the third set: " + str(claim_prize[4]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Client's numbers for the third set are: " + str(third_set) + "\n")
+                            fh.write("The number of correct matches in the third set is: " + str(len(same_match3)) + '\n')
+                            fh.write("The correct matches for the third set are: " + str(same_match3) + '\n')
+                            fh.write("The amount for the third set: " + str(claim_prize[4]) + "\n")
+                            fh.close()
                         elif len(same_match3) == 5:
                             third_winnings = float(claim_prize[5])
                             messagebox.showinfo('Third Set Results',
                                                 "Your number of matches are " + str(len(same_match3)) + ": " +
                                                 str(same_match3) + "\nYou have won: R" + str(claim_prize[5]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write("Client's numbers for the third set are: " + str(third_set) + "\n")
-                            text.write("The number of correct matches in the third set is: " + str(len(same_match3)) + '\n')
-                            text.write("The correct matches for the third set are: " + str(same_match3) + '\n')
-                            text.write("The amount for the third set: " + str(claim_prize[5]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Client's numbers for the third set are: " + str(third_set) + "\n")
+                            fh.write("The number of correct matches in the third set is: " + str(len(same_match3)) + '\n')
+                            fh.write("The correct matches for the third set are: " + str(same_match3) + '\n')
+                            fh.write("The amount for the third set: " + str(claim_prize[5]) + "\n")
+                            fh.close()
                         else:
                             third_winnings = float(claim_prize[6])
                             messagebox.showinfo('Third Set Results',
                                                 "Your number of matches are " + str(len(same_match3)) + ": " +
                                                 str(same_match3) + "\nYou have won: R" + str(claim_prize[6]))
                             # information that will be written on a separate text file
-                            text = open("Lotto.txt", "a")
-                            text.write("Client's numbers for the third set are: " + str(third_set) + "\n")
-                            text.write("The number of correct matches in the third set is: " + str(len(same_match3)) + '\n')
-                            text.write("The correct matches for the third set are: " + str(same_match3) + '\n')
-                            text.write("The amount for the third set: " + str(claim_prize[6]) + "\n")
-                            text.close()
+                            fh = open("Player_info.txt", "a")
+                            fh.write("Client's numbers for the third set are: " + str(third_set) + "\n")
+                            fh.write("The number of correct matches in the third set is: " + str(len(same_match3)) + '\n')
+                            fh.write("The correct matches for the third set are: " + str(same_match3) + '\n')
+                            fh.write("The amount for the third set: " + str(claim_prize[6]) + "\n")
+                            fh.close()
                 finally:
                     if len(first_set) == 6 and len(second_set) < 6 and len(third_set) < 6:
                         total_prize_amount = first_winnings
                         self.total_label.config(text=total_prize_amount)
                         # information that will be written on a separate text file
-                        text = open("Lotto.txt", "a")
-                        text.write("Total earnings in R: " + str(total_prize_amount) + '\n')
+                        fh = open("Player_info.txt", "a")
+                        fh.write("Total earnings in R: " + str(total_prize_amount) + '\n')
+                        fh.close()
+                        # separate text file with winners info
+                        text = open("prize_winners_info.txt", "+a")
+                        text.write("\nTotal Amount Won: " + str(total_prize_amount))
                         text.close()
                     elif len(first_set) == 6 and len(second_set) == 6 and len(third_set) < 6:
                         total_prize_amount = first_winnings + second_winnings
                         self.total_label.config(text=total_prize_amount)
                         # information that will be written on a separate text file
-                        text = open("Lotto.txt", "a")
-                        text.write("Total earnings in R: " + str(total_prize_amount) + '\n')
+                        fh = open("Player_info.txt", "a")
+                        fh.write("Total earnings in R: " + str(total_prize_amount) + '\n')
+                        fh.close()
+                        text = open("prize_winners_info.txt", "+a")
+                        text.write("\nTotal Amount Won: " + str(total_prize_amount))
                         text.close()
                     elif len(first_set) == 6 and len(second_set) == 6 and len(third_set) == 6:
                         total_prize_amount = first_winnings + second_winnings + third_winnings
                         self.total_label.config(text=total_prize_amount)
                         # information that will be written on a separate text file
-                        text = open("Lotto.txt", "a")
-                        text.write("Total earnings in R: " + str(total_prize_amount) + '\n')
+                        fh = open("Player_info.txt", "a")
+                        fh.write("Total earnings in R: " + str(total_prize_amount) + '\n')
+                        fh.close()
+                        text = open("prize_winners_info.txt", "+a")
+                        text.write("\nTotal Amount Won: " + str(total_prize_amount))
                         text.close()
 
             # function to claim prize
@@ -1192,12 +1092,7 @@ class User:
 
             # function to exit
             def exit(self):
-                pass
-                # exitMsgBox2 = messagebox.askyesnocancel('Exit', 'Would you like to exit', icon='warning')
-                # if exitMsgBox2 == Yes:
-                #     numberSelection_screen.destroy()
-                # else:
-                #     messagebox.showinfo('Return', 'You will now return to the application screen')
+                numberSelection_screen.destroy()
 
             def screen_3(self):
                 currency_conversion_screen = Tk()
@@ -1286,6 +1181,7 @@ class User:
                         amount = float(total_prize_amount)
                         converted_amount = amount * standard_rate[self.convert_list.get(ACTIVE)]
                         # round conversion off to 2 decimal places
+
                         self.converted_total['text'] = round(converted_amount, 2)
 
                     def conversion_clear(self):
@@ -1310,15 +1206,13 @@ class User:
                         canvas.place(relx=0.3, rely=0.02)
                         img_banks = ImageTk.PhotoImage(Image.open("banks2.jpeg"))
                         canvas.create_image(150, 5, anchor=N, image=img_banks)
-                        global converted_total
-                        global converted_amount
+                        # self.total = Conversion.converting(self.converted_total)
 
 
                         class Banking_details:
                             def __init__(self, master):
                                 var_material = StringVar()
-                                bank_options = {'ABSA': 632005, 'CAPITEC': 470010, 'FNB': 250655, 'NEDBANK': 198765,
-                                                'STANDARD BANK': 0o051001}
+                                bank_options = {'ABSA': 632005, 'CAPITEC': 470010, 'FNB': 250655, 'NEDBANK': 198765}
                                 self.banking_details_frame = Frame(banking_details_screen, bg="#bdbdbd", width=630,
                                                                    height=450)
                                 self.banking_details_frame.place(relx=0.1, rely=0.27)
@@ -1327,7 +1221,7 @@ class User:
                                 self.banking_instruction_heading = Label(master,
                                                                          text="Please enter your valid banking details:"
                                                                          , font=("Arial", 17, "bold"), bg="#bdbdbd")
-                                self.banking_instruction_heading.place(relx=0.13, rely=0.28)
+                                self.banking_instruction_heading.place(relx=0.13, rely=0.3)
 
                                 # account name label and entry
                                 self.account_name_label = Label(master, text="Account holder's name: ",
@@ -1340,45 +1234,39 @@ class User:
                                 # account number entry and label
                                 self.account_number_label = Label(master, text="Account number:"
                                                                   , font=("Arial", 15), bg="#bdbdbd")
-                                self.account_number_label.place(relx=0.13, rely=0.45)
+                                self.account_number_label.place(relx=0.13, rely=0.47)
                                 self.account_number_entry = Entry(master, font=("Arial", 15))
-                                self.account_number_entry.place(relx=0.5, rely=0.45)
+                                self.account_number_entry.place(relx=0.5, rely=0.47)
+
+                                # total
+                                # self.converted_total['text'] = round(converted_amount, 2)
+                                # self.converted_total.config(text="")
+                                # self.total = Label(master, text=""
+                                #                                   , font=("Arial", 15), bg="#bdbdbd")
+                                # self.total.place(relx=0.13, rely=0.74)
+                                # self.total.config(text=self.converted_total)
+
+
 
                                 # bank options
-                                # self.label_selected = Label(master, text="Not Selected")
-                                # self.label_selected.grid(row=1, column=1)
-                                self.banking_options = ttk.Combobox(master, width=20, font=("Arial", 15),
+                                self.banking_options = ttk.Combobox(master, width=19, font=("Arial", 15),
                                                                     values=tuple(bank_options.keys()),
                                                                     textvariable=var_material)
-                                # self.banking_options.bind('<<ComboboxSelected>>', lambda event:
-                                #                           self.label_selected.config(text=bank_options
-                                #                           [var_material.get()]))
-                                # self.banking_options.current(0)
+                                self.banking_options.bind('<<ComboboxSelected>>', lambda event:
+                                self.branch_code.config(text=bank_options[var_material.get()]))
+                                self.banking_options.set('Please select...')
 
-                                # label_selected = Label(master, text="Not Selected")
-                                # label_selected.grid(row=1, column=1)
-                                self.banking_options.place(relx=0.5, rely=0.5)
+                                self.banking_options.place(relx=0.5, rely=0.54)
                                 self.bank_options_label = Label(master, text="Bank Name: ", font=(
-                                                                "Arial", 15),
-                                                                bg="#bdbdbd")
-                                self.bank_options_label.place(relx=0.13, rely=0.5)
-                                # self.banking_options.bind("<<ComboboxSelected>>", self._onSelected)
-
-                            # def onSelected(event):
-                            #     if isinstance(event.widget, self.banking_options):
-                            #         value = event.widget.get()
-                            #         print("{} was selected".format(value))
-                                # self.converted_total = Label(master, text=self.converted_total, font=("Arial", 15,
-                                #                              "bold"), bg="#bdbdbd")
-                                # self.converted_total.place(relx=0.5, rely=0.7)
+                                    "Arial", 15), bg="#bdbdbd")
+                                self.bank_options_label.place(relx=0.13, rely=0.54)
                                 # bank branch code labels
                                 self.branch_code_label = Label(master, text="Branch Code ", font=(
-                                                                "Arial", 15), bg="#bdbdbd")
-                                self.branch_code_label.place(relx=0.13, rely=0.6)
+                                    "Arial", 15), bg="#bdbdbd")
+                                self.branch_code_label.place(relx=0.13, rely=0.61)
                                 self.branch_code = Label(master, text="", font=("Arial", 15),
                                                          bg="#bdbdbd")
-                                self.branch_code.place(relx=0.6, rely=0.6)
-                                self.branch_code.config(text='')
+                                self.branch_code.place(relx=0.5, rely=0.61)
                                 # proceed button
                                 self.confirm_btn = Button(master, borderwidth=5, padx=25, pady=10, fg="black",
                                                           bg="#09bd27", text="Confirm", font=("Arial", 17, "bold"),
@@ -1391,21 +1279,13 @@ class User:
                                                         command=self.banking_clear)
                                 self.clear_btn.place(relx=0.425, rely=0.87)
 
-                                # # converting button
-                                # self.convert_btn = Button(master, borderwidth=5, padx=25, pady=10, fg="white", bg="black",
-                                #                           text="Convert", font=("Arial", 17, "bold"), command=self.converting)
-                                # self.convert_btn.place(relx=0.3, rely=0.87)
                                 # exit button
                                 self.exit_btn = Button(master, borderwidth=5, padx=25, pady=10, fg="black", bg="red",
-                                                       text="Exit", font=("Arial", 17, "bold"), command=self.banking_exit)
+                                                       text="Exit", font=("Arial", 17, "bold"),
+                                                       command=self.banking_exit)
                                 self.exit_btn.place(relx=0.755, rely=0.87)
-                                # amount = float(total_prize_amount)
-                                # converted_amount = amount * standard_rate[self.convert_list.get(ACTIVE)]
-                                # self.converted_total['text'] = round(converted_amount, 2)
 
-                            # def _onSelected(self):
-                            #     if self.banking_options.get() == "ABSA":
-                            #         self.branch_code.config(text=self.banking_options.values("ABSA"))
+                                self.total = Conversion.converting(self.converted_total.cget('text'))
 
                             def confirmation(self):
                                 def account_number_validation():
@@ -1423,21 +1303,40 @@ class User:
 
                                 def account_name_validation():
                                     try:
-                                        valid_accountName = str(self.account_name_entry.get())
-                                        while valid_accountName:
-                                            return 1
+                                        valid_accountName = str.isalpha(self.account_name_entry.get())
                                         if valid_accountName == '':
                                             messagebox.showinfo('Incomplete Inputs', "Please fill in your account name.")
+                                        elif valid_accountName is False:
+                                            messagebox.showinfo("Error", "Please ensure that your account name only "
+                                                                         "consists of capital letters")
+                                        while valid_accountName:
+                                            return 1
                                     except ValueError:
                                         messagebox.showinfo('Account Name Error',
                                                             'Please ensure that your account number only contains digits.')
 
                                 if account_name_validation() == 1 and account_number_validation() == 1:
-                                    messagebox.showinfo('Attention', 'Please refer to your emails for confirmation of '
-                                                                     'your details submitted.')
-                                    # text file
-                                    # send email
                                     # play sound
+                                    # playsound("./sounds/391539__mativve__electro-win-sound.wav")
+                                    player_id = User.player_id(person_age)
+                                    # send email
+                                    s = smtplib.SMTP('smtp.gmail.com', 587)
+                                    sender_email_id = 'mikaylabeelders@gmail.com'
+                                    receiver_email_id = 'mikayla@trade245.com'
+                                        # User(login_screen).email_entry
+                                    password = 'Ashleemickey123*'
+
+                                    s.starttls()
+
+                                    s.login(sender_email_id, password)
+
+                                    message = "Subject: Congratulations!!!\n"
+                                    message = message + "Thank you for playing! " + "\nYour winnings are: " + str(self.total) + "\n\nBelow are your details:" + "\nPlayer ID: " + str(player_id) + "\nAccount name: " + str(self.account_name_entry.get()) + "\nAccount number: " + str(self.account_number_entry.get())
+
+                                    s.sendmail(sender_email_id, receiver_email_id, message)
+                                    # display instruction to player
+                                    messagebox.showinfo('Thank you for playing!', 'Please refer to your emails for '
+                                                                                  'confirmation of your details submitted.')
 
                             def banking_clear(self):
                                 self.account_number_entry.delete(0, END)
@@ -1445,11 +1344,14 @@ class User:
 
 
                             def banking_exit(self):
-                                pass
+                                banking_details_screen.destroy()
+
                         banking_details = Banking_details(banking_details_screen)
                         banking_details_screen.mainloop()
+
                 converting = Conversion(currency_conversion_screen)
                 currency_conversion_screen.mainloop()
+
         selecting_numbers = Selection(numberSelection_screen)
         numberSelection_screen.mainloop()
 
